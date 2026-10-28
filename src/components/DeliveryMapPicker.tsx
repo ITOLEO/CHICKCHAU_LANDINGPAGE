@@ -304,7 +304,7 @@ const InnerMapWorkspace: React.FC<InnerMapWorkspaceProps> = ({
           })}
         </div>
         <p className="text-xs font-semibold text-[#710014] pt-1">
-          Pengantaran prioritas sekitar area Tanah Lot, Denpasar Utara dan Canggu.
+          Pengantaran prioritas sekitar area Tanah Lot, Denpasar Utara dan Canggu (tidak menerima pengiriman diluar jangkauan tersebut).
         </p>
       </div>
     );
@@ -460,9 +460,11 @@ const InnerMapWorkspace: React.FC<InnerMapWorkspaceProps> = ({
         </div>
       </div>
 
-      <p className="text-xs font-semibold text-[#710014] flex items-center gap-1.5 px-1">
-        <MapPin className="w-3.5 h-3.5 shrink-0" />
-        <span>Pengantaran prioritas sekitar area Tanah Lot, Denpasar Utara dan Canggu.</span>
+      <p className="text-xs font-semibold text-[#710014] flex items-start gap-1.5 px-1">
+        <MapPin className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+        <span>
+          Pengantaran prioritas sekitar area Tanah Lot, Denpasar Utara dan Canggu (tidak menerima pengiriman diluar jangkauan tersebut).
+        </span>
       </p>
     </div>
   );
@@ -532,7 +534,7 @@ export const DeliveryMapPicker: React.FC<DeliveryMapPickerProps> = ({
           })}
         </div>
         <p className="text-xs font-semibold text-[#710014] pt-1">
-          Pengantaran prioritas sekitar area Tanah Lot, Denpasar Utara dan Canggu.
+          Pengantaran prioritas sekitar area Tanah Lot, Denpasar Utara dan Canggu (tidak menerima pengiriman diluar jangkauan tersebut).
         </p>
       </div>
     );
