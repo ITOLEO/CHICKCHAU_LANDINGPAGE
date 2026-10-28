@@ -73,6 +73,21 @@ function isQuotaError(err: unknown): boolean {
   );
 }
 
+const DELIVERY_AREA_OPTIONS: ReadonlyArray<{ label: string; lat: number; lng: number }> = [
+  { label: 'Tanah Lot (Tabanan)', lat: -8.6212, lng: 115.0868 },
+  { label: 'Denpasar Utara', lat: -8.6356, lng: 115.2126 },
+  { label: 'Canggu', lat: -8.6478, lng: 115.1385 },
+  { label: 'Tabanan Kota', lat: -8.5405, lng: 115.1253 },
+  { label: 'Kedungu', lat: -8.6042, lng: 115.0805 },
+  { label: 'Seseh', lat: -8.6345, lng: 115.1128 },
+  { label: 'Batubolong', lat: -8.6542, lng: 115.1302 },
+  { label: 'Dalung', lat: -8.6186, lng: 115.1744 },
+  { label: 'Berawa', lat: -8.6631, lng: 115.1419 },
+  { label: 'Keboiwa', lat: -8.6328, lng: 115.1903 },
+  { label: 'Nangka', lat: -8.6389, lng: 115.2175 },
+  { label: 'Tekumar', lat: -8.6775, lng: 115.2039 }
+];
+
 interface InnerMapWorkspaceProps {
   selectedPos: LatLngPoint | null;
   selectedLabel: string | null;
@@ -265,13 +280,7 @@ const InnerMapWorkspace: React.FC<InnerMapWorkspaceProps> = ({
           <span>Pilih Area Lokasi Pengantaran Bali:</span>
         </div>
         <div className="flex flex-wrap gap-2">
-          {[
-            { label: 'Tanah Lot (Tabanan)', lat: -8.6212, lng: 115.0868 },
-            { label: 'Denpasar Utara', lat: -8.6356, lng: 115.2126 },
-            { label: 'Canggu', lat: -8.6478, lng: 115.1385 },
-            { label: 'Tabanan Kota', lat: -8.5405, lng: 115.1253 },
-            { label: 'Denpasar Kota', lat: -8.6705, lng: 115.2126 }
-          ].map(area => {
+          {DELIVERY_AREA_OPTIONS.map(area => {
             const mapsUrl = `https://www.google.com/maps?q=${area.lat.toFixed(6)},${area.lng.toFixed(6)}`;
             const promo = calculateShippingPromo({ lat: area.lat, lng: area.lng }, mapsUrl);
             const isSelected =
@@ -495,13 +504,7 @@ export const DeliveryMapPicker: React.FC<DeliveryMapPickerProps> = ({
           Pilih Lokasi Pengantaran (Area Tabanan &amp; Denpasar, Bali) <span className="text-[#710014]">*</span>
         </p>
         <div className="flex flex-wrap gap-2">
-          {[
-            { label: 'Tanah Lot (Tabanan)', lat: -8.6212, lng: 115.0868 },
-            { label: 'Denpasar Utara', lat: -8.6356, lng: 115.2126 },
-            { label: 'Canggu', lat: -8.6478, lng: 115.1385 },
-            { label: 'Tabanan Kota', lat: -8.5405, lng: 115.1253 },
-            { label: 'Denpasar Kota', lat: -8.6705, lng: 115.2126 }
-          ].map(area => {
+          {DELIVERY_AREA_OPTIONS.map(area => {
             const mapsUrl = `https://www.google.com/maps?q=${area.lat.toFixed(6)},${area.lng.toFixed(6)}`;
             const promo = calculateShippingPromo({ lat: area.lat, lng: area.lng }, mapsUrl);
             const isSelected =

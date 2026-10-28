@@ -637,6 +637,11 @@ export const CartPage: React.FC<CartPageProps> = ({ onBackToMenu }) => {
                 </div>
               </div>
             </div>
+
+            <p className="px-2 text-xs sm:text-sm font-semibold text-[#710014] flex items-center gap-1.5">
+              <MapPin className="w-4 h-4 shrink-0" />
+              <span>Produk akan dikirim dari Tanah Lot, Kota Tabanan.</span>
+            </p>
           </div>
 
           <div className="lg:col-span-6">
@@ -835,22 +840,12 @@ export const CartPage: React.FC<CartPageProps> = ({ onBackToMenu }) => {
                   >
                     <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
                     <span>
-                      {isSubmitting
-                        ? 'MENGHUBUNGKAN KE WHATSAPP...'
-                        : `PESAN VIA WHATSAPP (${CHICKCHAU_WA_DISPLAY})`}
+                      {isSubmitting ? 'MEMPROSES CHECKOUT...' : 'Checkout'}
                     </span>
                   </button>
 
-                  <p className="text-[11px] sm:text-xs text-center text-[#594345]">
-                    Terhubung langsung ke{' '}
-                    <a
-                      href={CHICKCHAU_WA_BASE_URL}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-bold text-[#710014] underline underline-offset-2 hover:text-[#8F1025]"
-                    >
-                      wa.me/628112199334 ({CHICKCHAU_WA_DISPLAY})
-                    </a>
+                  <p className="text-[11px] sm:text-xs text-center text-[#594345] font-medium">
+                    Pesan via WhatsApp
                   </p>
                 </div>
               </form>
