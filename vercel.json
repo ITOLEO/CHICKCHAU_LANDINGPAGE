@@ -40,6 +40,19 @@
       ]
     },
     {
+      "source": "/og-image-v2.jpg",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "image/jpeg"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400"
+        }
+      ]
+    },
+    {
       "source": "/og-image.jpg",
       "headers": [
         {

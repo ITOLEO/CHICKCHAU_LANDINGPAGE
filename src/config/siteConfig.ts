@@ -22,7 +22,7 @@ export const CART_TITLE = 'Keranjang & Checkout — CHICKCHAU';
 export const CART_DESCRIPTION =
   'Selesaikan pesanan Chikchau Capcin dan Crispy Chickchau kamu di CHICKCHAU melalui WhatsApp.';
 export const DEFAULT_PRODUCTION_SITE_URL = 'https://www.chickchau.my.id';
-export const OG_IMAGE_PATH = '/og-image.jpg';
+export const OG_IMAGE_PATH = '/og-image-v2.jpg';
 export const OG_IMAGE_TYPE = 'image/jpeg';
 export const OG_IMAGE_WIDTH = '1200';
 export const OG_IMAGE_HEIGHT = '630';
