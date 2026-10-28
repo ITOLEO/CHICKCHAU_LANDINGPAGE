@@ -21,7 +21,7 @@ export const HOMEPAGE_TWITTER_DESCRIPTION =
 export const CART_TITLE = 'Keranjang & Checkout — CHICKCHAU';
 export const CART_DESCRIPTION =
   'Selesaikan pesanan Chikchau Capcin dan Crispy Chickchau kamu di CHICKCHAU melalui WhatsApp.';
-export const DEFAULT_PRODUCTION_SITE_URL = 'https://chickchau.my.id';
+export const DEFAULT_PRODUCTION_SITE_URL = 'https://www.chickchau.my.id';
 export const OG_IMAGE_PATH = '/og-image.jpg';
 export const OG_IMAGE_TYPE = 'image/jpeg';
 export const OG_IMAGE_WIDTH = '1200';
@@ -83,8 +83,8 @@ export function normalizeProductionSiteUrl(rawUrl?: string | null): string | nul
         return null;
       }
     }
-    if (host === 'www.chickchau.my.id' || host === 'chickchau.my.id') {
-      return 'https://chickchau.my.id';
+    if (host === 'chickchau.my.id' || host === 'www.chickchau.my.id') {
+      return 'https://www.chickchau.my.id';
     }
     // Consistent trailing-slash policy: origin without trailing slash; homepage canonical is `${origin}/`
     return parsed.origin;
