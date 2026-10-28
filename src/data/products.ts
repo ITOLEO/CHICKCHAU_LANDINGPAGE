@@ -14,6 +14,7 @@ export interface Product {
   description: string;
   defaultPrice: number | null;
   available: boolean;
+  comingSoon?: boolean;
   tags: string[];
   imageUrl: string;
 }
@@ -27,6 +28,7 @@ export const BASE_PRODUCTS: Product[] = [
     description: 'Minuman cappuccino dingin 250ml yang creamy dengan potongan cincau hitam segar.',
     defaultPrice: 8000,
     available: true,
+    comingSoon: false,
     tags: ['Dingin', 'Cincau Hitam', 'Creamy'],
     imageUrl: '/assets/capcin_white.png'
   },
@@ -37,7 +39,8 @@ export const BASE_PRODUCTS: Product[] = [
     category: 'Food',
     description: 'Fillet dada ayam goreng tepung renyah khas Taiwan dengan taburan bumbu gurih.',
     defaultPrice: 30000,
-    available: true,
+    available: false,
+    comingSoon: true,
     tags: ['Renyah', 'Gurih', 'Bumbu Spesial'],
     imageUrl: '/assets/shihlin_white.png'
   }

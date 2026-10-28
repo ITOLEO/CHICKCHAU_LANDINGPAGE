@@ -14,7 +14,7 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToProducts, onGoToCart }) =>
   return (
     <section
       id="top"
-      className="relative pt-3 pb-7 sm:pt-8 sm:pb-16 lg:pt-10 lg:pb-20 overflow-hidden"
+      className="relative pt-5 pb-9 sm:pt-8 sm:pb-16 lg:pt-10 lg:pb-20 overflow-hidden"
     >
       <div
         aria-hidden="true"
@@ -41,7 +41,7 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToProducts, onGoToCart }) =>
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 lg:gap-6 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 sm:gap-10 lg:gap-6 items-center">
           <div className="lg:col-span-6 z-10">
             <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[11px] sm:text-sm font-extrabold uppercase tracking-wider text-[#710014] mb-2.5 sm:mb-5">
               <span>{BUSINESS_INFO.name}</span>
@@ -62,7 +62,7 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToProducts, onGoToCart }) =>
               Nikmati kelezatan Crispy Chickchau dan Chikchau Capcin dari CHICKCHAU. Dibuat segar setiap hari dengan sistem pre-order minimal H-1 untuk pengantaran area Tabanan &amp; Denpasar, Bali.
             </p>
 
-            <p className="text-[11px] sm:text-sm font-semibold text-[#594345] mb-4 sm:mb-8 flex flex-wrap items-center gap-x-2 gap-y-1">
+            <p className="text-[11px] sm:text-sm font-semibold text-[#594345] mb-5 sm:mb-8 flex flex-wrap items-center gap-x-2 gap-y-1">
               <span className="text-[#710014] font-bold">{BUSINESS_INFO.operatingHours}</span>
               <span aria-hidden="true">·</span>
               <span>Area Layanan: {BUSINESS_INFO.locationCity}</span>
@@ -99,13 +99,13 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToProducts, onGoToCart }) =>
             </div>
           </div>
 
-          <div className="lg:col-span-6 relative flex items-center justify-center min-h-[210px] sm:min-h-[400px] lg:min-h-[470px] overflow-hidden sm:overflow-visible rounded-3xl sm:rounded-none">
+          <div className="lg:col-span-6 relative flex items-center justify-center mt-3 mb-2 sm:mt-0 sm:mb-0 py-8 sm:py-6 min-h-[290px] sm:min-h-[400px] lg:min-h-[470px] overflow-visible">
             <svg
               aria-hidden="true"
               viewBox="0 0 640 560"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
-              className="absolute inset-0 m-auto sm:inset-auto sm:-right-12 lg:-right-16 sm:top-1/2 sm:-translate-y-1/2 w-[96%] sm:w-[110%] h-auto max-w-none pointer-events-none select-none"
+              className="absolute inset-0 m-auto sm:inset-auto sm:-right-12 lg:-right-16 sm:top-1/2 sm:-translate-y-1/2 w-[88%] max-w-[320px] sm:max-w-none sm:w-[110%] h-auto pointer-events-none select-none"
             >
               <path
                 d="M178.5 88.2C264.8 18.6 402.4 -18.4 514.2 14.8C626 48 672.5 168.4 624.8 274.6C577.1 380.8 456.4 428.5 341.2 468.2C226 507.9 102.3 532.4 54.6 462.8C6.9 393.2 92.2 157.8 178.5 88.2Z"
@@ -148,7 +148,7 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToProducts, onGoToCart }) =>
               aria-hidden="true"
               viewBox="0 0 54 64"
               fill="none"
-              className="absolute bottom-6 sm:bottom-20 right-2 sm:right-3 w-6 sm:w-10 h-auto z-20 pointer-events-none select-none"
+              className="absolute bottom-4 sm:bottom-20 right-3 sm:right-3 w-6 sm:w-10 h-auto z-20 pointer-events-none select-none"
             >
               <path
                 d="M8 22L30 8"
@@ -170,7 +170,7 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToProducts, onGoToCart }) =>
               />
             </svg>
 
-            <div className="relative z-10 w-full flex items-center justify-center py-2 sm:py-4">
+            <div className="relative z-10 w-full flex items-center justify-center py-3 sm:py-4">
               <button
                 type="button"
                 onClick={onScrollToProducts}

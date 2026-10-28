@@ -190,12 +190,14 @@ export async function getAuthoritativeCatalog(): Promise<Product[]> {
         return BASE_PRODUCTS.map((base) => {
           const row = data.find((r) => r.id === base.id);
           if (!row) return { ...base };
+          const isComingSoon = Boolean(base.comingSoon);
           return {
             ...base,
-            name: row.name || base.name,
-            shortName: row.short_name || base.shortName,
+            name: base.name,
+            shortName: base.shortName,
             defaultPrice: typeof row.unit_price === 'number' ? row.unit_price : base.defaultPrice,
-            available: typeof row.available === 'boolean' ? row.available : base.available,
+            available: isComingSoon ? false : (typeof row.available === 'boolean' ? row.available : base.available),
+            comingSoon: isComingSoon,
           };
         });
       }
@@ -207,12 +209,14 @@ export async function getAuthoritativeCatalog(): Promise<Product[]> {
         return BASE_PRODUCTS.map((base) => {
           const row = rows.find((r) => r.id === base.id);
           if (!row) return { ...base };
+          const isComingSoon = Boolean(base.comingSoon);
           return {
             ...base,
-            name: row.name || base.name,
-            shortName: row.shortName || base.shortName,
+            name: base.name,
+            shortName: base.shortName,
             defaultPrice: row.unitPrice,
-            available: row.available,
+            available: isComingSoon ? false : row.available,
+            comingSoon: isComingSoon,
           };
         });
       }

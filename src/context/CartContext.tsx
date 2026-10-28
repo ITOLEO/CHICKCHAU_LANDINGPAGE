@@ -67,7 +67,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
           for (const key of Object.keys(parsed)) {
             const validProd = BASE_PRODUCTS.find(p => p.id === key);
             const qty = parsed[key];
-            if (validProd && typeof qty === 'number' && qty > 0) {
+            if (
+              validProd &&
+              validProd.available &&
+              !validProd.comingSoon &&
+              typeof qty === 'number' &&
+              qty > 0
+            ) {
               validated[validProd.id] = Math.min(50, Math.floor(qty));
             }
           }
@@ -81,6 +87,21 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   });
 
   useEffect(() => {
+    setCartMap(prev => {
+      let changed = false;
+      const next: CartStorageMap = { ...prev };
+      for (const key of Object.keys(next)) {
+        const prod = products.find(p => p.id === key);
+        if (!prod || !prod.available || prod.comingSoon) {
+          delete next[key];
+          changed = true;
+        }
+      }
+      return changed ? next : prev;
+    });
+  }, [products]);
+
+  useEffect(() => {
     try {
       localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartMap));
     } catch {
@@ -91,10 +112,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const addToCart = useCallback(
     (productId: ProductId) => {
       const prod = products.find(p => p.id === productId);
-      if (prod && isPriceConfigured(prod.defaultPrice)) {
-        trackSelectItem(prod);
-        trackAddToCart(prod, 1, prod.defaultPrice);
+      if (!prod || !prod.available || prod.comingSoon || !isPriceConfigured(prod.defaultPrice)) {
+        return;
       }
+
+      trackSelectItem(prod);
+      trackAddToCart(prod, 1, prod.defaultPrice);
 
       setCartMap(prev => ({
         ...prev,
@@ -124,10 +147,20 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const updateQuantity = useCallback(
     (productId: ProductId, quantity: number) => {
       const prod = products.find(p => p.id === productId);
+      if (!prod || !prod.available || prod.comingSoon) {
+        setCartMap(prev => {
+          if (!(productId in prev)) return prev;
+          const updated = { ...prev };
+          delete updated[productId];
+          return updated;
+        });
+        return;
+      }
+
       const prevQty = cartMap[productId] || 0;
       const clampedQty = Math.min(50, Math.floor(quantity));
 
-      if (prod && isPriceConfigured(prod.defaultPrice)) {
+      if (isPriceConfigured(prod.defaultPrice)) {
         if (clampedQty > prevQty) {
           trackAddToCart(prod, clampedQty - prevQty, prod.defaultPrice);
         } else if (clampedQty < prevQty && prevQty > 0) {

@@ -40,6 +40,8 @@ export const ProductSection: React.FC<ProductSectionProps> = ({ onGoToCart }) =>
           {products.map((product: Product) => {
             const quantity = getItemQuantity(product.id);
             const hasValidPrice = isPriceConfigured(product.defaultPrice);
+            const isComingSoon = Boolean(product.comingSoon) || !product.available;
+            const canOrderProduct = !isComingSoon && hasValidPrice;
 
             return (
               <article
@@ -55,8 +57,17 @@ export const ProductSection: React.FC<ProductSectionProps> = ({ onGoToCart }) =>
                     productId={product.id}
                     size="lg"
                     className="w-full h-full"
-                    imgClassName="max-h-full w-auto object-contain transition-transform duration-300 hover:scale-[1.03]"
+                    imgClassName={`max-h-full w-auto object-contain transition-transform duration-300 ${
+                      isComingSoon ? 'opacity-70 grayscale-[20%]' : 'hover:scale-[1.03]'
+                    }`}
                   />
+                  {isComingSoon && (
+                    <div className="pointer-events-none select-none absolute inset-x-1 top-1/2 -translate-y-1/2 flex justify-center">
+                      <span className="px-2.5 py-1 rounded-md bg-[#28191B]/90 text-[#FFF7F0] text-[10px] sm:text-xs font-extrabold uppercase tracking-wider text-center shadow-md">
+                        Coming Soon
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex-1 min-w-0 w-full flex flex-col text-left">
@@ -75,8 +86,12 @@ export const ProductSection: React.FC<ProductSectionProps> = ({ onGoToCart }) =>
                     {product.description}
                   </p>
 
-                  <div className="mt-2 sm:mt-3 mb-2.5 sm:mb-4 h-7 sm:h-9 flex items-center justify-start">
-                    {hasValidPrice ? (
+                  <div className="mt-2 sm:mt-3 mb-2.5 sm:mb-4 h-7 sm:h-9 flex items-center justify-start gap-2">
+                    {isComingSoon ? (
+                      <span className="text-sm sm:text-lg font-extrabold uppercase tracking-wide text-[#710014] leading-none">
+                        Coming Soon
+                      </span>
+                    ) : hasValidPrice ? (
                       <span className="text-lg sm:text-[1.7rem] font-black text-[#710014] tabular-nums leading-none">
                         {formatRupiah(product.defaultPrice)}
                       </span>
@@ -89,10 +104,14 @@ export const ProductSection: React.FC<ProductSectionProps> = ({ onGoToCart }) =>
                   </div>
 
                   <div className="mt-auto pt-1 flex items-center justify-start gap-2 sm:gap-2.5 flex-nowrap">
-                    <div className="h-9 sm:h-11 inline-flex items-center gap-0.5 sm:gap-1 bg-white p-0.5 sm:p-1 rounded-full border border-[#8C6D6F]/45 shadow-[0_2px_8px_rgba(40,25,27,0.04)] shrink-0">
+                    <div
+                      className={`h-9 sm:h-11 inline-flex items-center gap-0.5 sm:gap-1 bg-white p-0.5 sm:p-1 rounded-full border border-[#8C6D6F]/45 shadow-[0_2px_8px_rgba(40,25,27,0.04)] shrink-0 ${
+                        !canOrderProduct ? 'opacity-50' : ''
+                      }`}
+                    >
                       <button
                         type="button"
-                        disabled={!hasValidPrice || quantity === 0}
+                        disabled={!canOrderProduct || quantity === 0}
                         onClick={() => updateQuantity(product.id, Math.max(0, quantity - 1))}
                         className="w-8 h-8 sm:w-9 sm:h-9 rounded-full hover:bg-[#FFF7F0] disabled:opacity-40 disabled:cursor-not-allowed text-[#28191B] flex items-center justify-center font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#710014]"
                         aria-label={`Kurangi porsi ${product.name}`}
@@ -104,12 +123,12 @@ export const ProductSection: React.FC<ProductSectionProps> = ({ onGoToCart }) =>
                         className="min-w-[20px] sm:min-w-[24px] text-center text-xs sm:text-sm font-extrabold text-[#28191B] tabular-nums select-none"
                         aria-label={`Jumlah ${product.name} di keranjang: ${quantity}`}
                       >
-                        {quantity}
+                        {isComingSoon ? 0 : quantity}
                       </span>
 
                       <button
                         type="button"
-                        disabled={!hasValidPrice}
+                        disabled={!canOrderProduct}
                         onClick={() =>
                           quantity === 0
                             ? addToCart(product.id)
@@ -122,7 +141,16 @@ export const ProductSection: React.FC<ProductSectionProps> = ({ onGoToCart }) =>
                       </button>
                     </div>
 
-                    {!hasValidPrice ? (
+                    {isComingSoon ? (
+                      <button
+                        type="button"
+                        disabled
+                        className="h-9 sm:h-11 px-3.5 sm:px-5 rounded-full bg-[#EBD9D0] text-[#594345] text-xs sm:text-sm font-extrabold cursor-not-allowed whitespace-nowrap shrink-0"
+                        title="Crispy Chickchau segera hadir dan belum dapat dipesan sementara"
+                      >
+                        Coming Soon
+                      </button>
+                    ) : !hasValidPrice ? (
                       <button
                         type="button"
                         disabled
