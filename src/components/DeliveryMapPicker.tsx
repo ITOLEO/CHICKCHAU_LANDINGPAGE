@@ -393,17 +393,14 @@ const InnerMapWorkspace: React.FC<InnerMapWorkspaceProps> = ({
             <Map
               mapId="DEMO_MAP_ID"
               defaultCenter={BUSINESS_INFO.defaultMapCenter}
-              defaultZoom={11}
+              defaultZoom={13}
               gestureHandling="cooperative"
               onClick={handleMapClick}
               internalUsageAttributionIds={['gmp_mcp_codeassist_v1_aistudio']}
               style={{ width: '100%', height: '100%' }}
             >
-              {/* Default CHICKCHAU Bali Hub Marker */}
-              <AdvancedMarker
-                position={BUSINESS_INFO.defaultMapCenter}
-                title="Titik Pusat Layanan CHICKCHAU Bali (Tabanan & Denpasar)"
-              >
+              {/* Default CHICKCHAU Store Point Marker */}
+              <AdvancedMarker position={BUSINESS_INFO.defaultMapCenter}>
                 <Pin
                   background="#21191A"
                   borderColor="#F2F1ED"

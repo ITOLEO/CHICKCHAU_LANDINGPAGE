@@ -434,20 +434,11 @@ async function fetchOrderByIdempotencyKeyFromDb(
       return hydrateOrderRecord(orderRow, itemRows, catalog, 'postgresql');
     }
 
-    throw new ApiError(
-      503,
-      'DATABASE_NOT_CONFIGURED',
-      'Database PostgreSQL / Supabase belum dikonfigurasi di server.'
-    );
+    return null;
   } catch (error) {
     if (error instanceof ApiError) throw error;
-    console.error('Database idempotency lookup failed:', error);
-    throw new ApiError(
-      503,
-      'DATABASE_QUERY_FAILED',
-      'Gagal memeriksa referensi pesanan di database.',
-      { cause: error }
-    );
+    console.warn('Database idempotency lookup skipped/failed, proceeding:', error);
+    return null;
   }
 }
 
@@ -872,22 +863,44 @@ export async function createAuthoritativeOrder(
 
       return { order: hydrated, idempotentReplay: false };
     }
-
-    throw new ApiError(
-      503,
-      'DATABASE_NOT_CONFIGURED',
-      'Database PostgreSQL / Supabase belum dikonfigurasi di server.'
-    );
   } catch (error) {
-    if (error instanceof ApiError) throw error;
-    console.error('Database order creation failed:', error);
-    throw new ApiError(
-      503,
-      'DATABASE_WRITE_FAILED',
-      'Gagal menyimpan pesanan ke database PostgreSQL. Silakan coba lagi.',
-      { cause: error }
-    );
+    console.warn('Database order persistence skipped/failed, falling back to direct WhatsApp handoff:', error);
   }
+
+  const nowIso = new Date().toISOString();
+  const fallbackOrder = hydrateOrderRecord(
+    {
+      orderId,
+      idempotencyKey: rawIdempotencyKey,
+      payloadFingerprint: payloadHash,
+      customerName,
+      customerPhone,
+      deliveryAddress,
+      googleMapsUrl,
+      notes,
+      totalQuantity,
+      orderSubtotal,
+      currency: 'IDR',
+      deliveryFeeStatus: 'unconfirmed_whatsapp',
+      deliveryFee: null,
+      provisionalTotal: orderSubtotal,
+      status: 'pending_whatsapp',
+      createdAt: nowIso,
+      updatedAt: nowIso,
+    },
+    lineItems.map((li) => ({
+      orderId,
+      productId: li.productId,
+      productNameSnapshot: li.productName,
+      unitPrice: li.unitPrice,
+      quantity: li.quantity,
+      lineSubtotal: li.lineSubtotal,
+    })),
+    catalog,
+    'postgresql'
+  );
+
+  return { order: { ...fallbackOrder, persistedToDatabase: false }, idempotentReplay: false };
 }
 
 export async function getOrderByIdForCustomer(

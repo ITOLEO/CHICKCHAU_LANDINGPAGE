@@ -65,6 +65,27 @@ export default function App() {
     return () => window.removeEventListener('gmp-quota-exceeded', onQuotaExceeded);
   }, []);
 
+  useEffect(() => {
+    const preventPinchZoom = (e: TouchEvent) => {
+      if (e.touches.length > 1) {
+        e.preventDefault();
+      }
+    };
+    const preventGesture = (e: Event) => {
+      e.preventDefault();
+    };
+
+    document.addEventListener('touchmove', preventPinchZoom, { passive: false });
+    document.addEventListener('gesturestart', preventGesture);
+    document.addEventListener('gesturechange', preventGesture);
+
+    return () => {
+      document.removeEventListener('touchmove', preventPinchZoom);
+      document.removeEventListener('gesturestart', preventGesture);
+      document.removeEventListener('gesturechange', preventGesture);
+    };
+  }, []);
+
   const navigateTo = (route: 'home' | 'cart', targetId?: string) => {
     setCurrentRoute(route);
     const targetPath = route === 'cart' ? '/cart' : '/';
@@ -93,7 +114,7 @@ export default function App() {
   return (
     <CartProvider>
       <SplashScreen isVisible={showSplash} />
-      <div className="min-h-screen flex flex-col bg-[#FFF7F0] text-[#28191B] selection:bg-[#710014] selection:text-white">
+      <div className="min-h-screen w-full max-w-[100vw] overflow-x-hidden flex flex-col bg-[#FFF7F0] text-[#28191B] selection:bg-[#710014] selection:text-white">
         {quotaExceeded && (
           <div
             role="alert"
@@ -127,12 +148,15 @@ export default function App() {
           onNavigate={navigateTo}
         />
 
-        <div className="flex-1">
+        <div className="flex-1 w-full max-w-[100vw] overflow-x-hidden">
           {currentRoute === 'home' ? (
             <>
-              <Hero onScrollToProducts={() => navigateTo('home', 'produk')} />
+              <Hero
+                onScrollToProducts={() => navigateTo('home', 'produk')}
+                onGoToCart={() => navigateTo('cart')}
+              />
               <BrandIntro />
-              <ProductSection />
+              <ProductSection onGoToCart={() => navigateTo('cart')} />
               <ClosingCTA
                 onOrderNow={() => navigateTo('home', 'produk')}
                 onGoToCart={() => navigateTo('cart')}

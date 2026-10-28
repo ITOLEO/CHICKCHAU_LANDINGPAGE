@@ -53,7 +53,7 @@ export const BUSINESS_INFO = {
   whatsappBaseUrl: WHATSAPP_BASE_URL,
   operatingHours: 'Sistem Pre-Order (Minimal H-1)',
   locationCity: 'Tabanan & Denpasar, Bali, Indonesia',
-  defaultMapCenter: { lat: -8.6095, lng: 115.1745 },
+  defaultMapCenter: { lat: -8.6226624, lng: 115.1042507 },
   shippingRatePerKm: SHIPPING_RATE_PER_KM,
   shippingPromoLabel: 'Discount 100% Special Offer'
 };

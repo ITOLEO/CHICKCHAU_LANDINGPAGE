@@ -30,6 +30,19 @@ export interface OrderDetails {
 
 export const CHICKCHAU_WA_NUMBER = WHATSAPP_INTERNATIONAL_NUMBER;
 export const CHICKCHAU_WA_DISPLAY = WHATSAPP_DISPLAY_NUMBER;
+export const CHICKCHAU_WA_BASE_URL = WHATSAPP_BASE_URL;
+
+export function generateClientOrderReference(now = new Date()): string {
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let suffix = '';
+  for (let i = 0; i < 6; i++) {
+    suffix += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return `ORD-${year}${month}${day}-${suffix}`;
+}
 
 export function buildWhatsAppMessage(order: OrderDetails): string {
   const { orderReference, items, totalQuantity, orderSubtotal, customerData, distanceKm } = order;
@@ -97,4 +110,21 @@ export function generateWhatsAppUrl(order: OrderDetails): string {
   const message = buildWhatsAppMessage(order);
   const encoded = encodeURIComponent(message);
   return `${WHATSAPP_BASE_URL}?text=${encoded}`;
+}
+
+export function openWhatsAppDirect(whatsappUrl: string): boolean {
+  if (typeof document === 'undefined') return false;
+  try {
+    const anchor = document.createElement('a');
+    anchor.href = whatsappUrl;
+    anchor.target = '_blank';
+    anchor.rel = 'noopener noreferrer';
+    anchor.style.display = 'none';
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+    return true;
+  } catch {
+    return false;
+  }
 }
