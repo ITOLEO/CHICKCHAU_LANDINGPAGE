@@ -40,6 +40,19 @@
       ]
     },
     {
+      "source": "/assets/og-images(.*)",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "image/png"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400"
+        }
+      ]
+    },
+    {
       "source": "/api/(.*)",
       "headers": [
         {
@@ -54,6 +67,10 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/assets/og-images",
+      "destination": "/assets/og-images.png"
+    },
     {
       "source": "/robots.txt",
       "destination": "/api/robots"

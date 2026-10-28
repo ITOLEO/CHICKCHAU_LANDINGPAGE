@@ -64,8 +64,10 @@ export function syncRouteSeo(route: 'home' | 'cart'): void {
   const rawGscToken =
     (import.meta.env.VITE_GOOGLE_SITE_VERIFICATION as string | undefined) || '';
 
-  const productionOrigin = normalizeProductionSiteUrl(rawSiteUrl);
+  const productionOrigin =
+    normalizeProductionSiteUrl(rawSiteUrl) || SEO_DEFAULTS.defaultSiteUrl;
   const gscToken = normalizeGoogleSiteVerification(rawGscToken);
+  const ogImageHref = `${productionOrigin}${SEO_DEFAULTS.ogImagePath}`;
 
   document.documentElement.lang = SEO_DEFAULTS.language;
 
@@ -93,6 +95,37 @@ export function syncRouteSeo(route: 'home' | 'cart'): void {
     'og:description',
     SEO_DEFAULTS.description
   );
+  upsertMetaTag('meta[property="og:image"]', 'property', 'og:image', ogImageHref);
+  upsertMetaTag(
+    'meta[property="og:image:secure_url"]',
+    'property',
+    'og:image:secure_url',
+    ogImageHref
+  );
+  upsertMetaTag(
+    'meta[property="og:image:type"]',
+    'property',
+    'og:image:type',
+    SEO_DEFAULTS.ogImageType
+  );
+  upsertMetaTag(
+    'meta[property="og:image:width"]',
+    'property',
+    'og:image:width',
+    SEO_DEFAULTS.ogImageWidth
+  );
+  upsertMetaTag(
+    'meta[property="og:image:height"]',
+    'property',
+    'og:image:height',
+    SEO_DEFAULTS.ogImageHeight
+  );
+  upsertMetaTag(
+    'meta[property="og:image:alt"]',
+    'property',
+    'og:image:alt',
+    SEO_DEFAULTS.ogImageAlt
+  );
   upsertMetaTag('meta[name="twitter:card"]', 'name', 'twitter:card', 'summary_large_image');
   upsertMetaTag('meta[name="twitter:title"]', 'name', 'twitter:title', pageTitle);
   upsertMetaTag(
@@ -100,6 +133,13 @@ export function syncRouteSeo(route: 'home' | 'cart'): void {
     'name',
     'twitter:description',
     SEO_DEFAULTS.description
+  );
+  upsertMetaTag('meta[name="twitter:image"]', 'name', 'twitter:image', ogImageHref);
+  upsertMetaTag(
+    'meta[name="twitter:image:alt"]',
+    'name',
+    'twitter:image:alt',
+    SEO_DEFAULTS.ogImageAlt
   );
 
   if (gscToken) {
@@ -131,35 +171,25 @@ export function syncRouteSeo(route: 'home' | 'cart'): void {
   } else {
     upsertMetaTag('meta[name="robots"]', 'name', 'robots', 'index, follow');
 
-    if (productionOrigin) {
-      const canonicalHref = `${productionOrigin}/`;
-      const ogImageHref = `${productionOrigin}${SEO_DEFAULTS.ogImagePath}`;
+    const canonicalHref = `${productionOrigin}/`;
 
-      let canonicalEl = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
-      if (!canonicalEl) {
-        canonicalEl = document.createElement('link');
-        canonicalEl.setAttribute('rel', 'canonical');
-        document.head.appendChild(canonicalEl);
-      }
-      canonicalEl.setAttribute('href', canonicalHref);
-
-      upsertMetaTag('meta[property="og:url"]', 'property', 'og:url', canonicalHref);
-      upsertMetaTag('meta[property="og:image"]', 'property', 'og:image', ogImageHref);
-      upsertMetaTag('meta[name="twitter:image"]', 'name', 'twitter:image', ogImageHref);
-
-      let jsonLdEl = document.head.querySelector<HTMLScriptElement>('script#chickchau-jsonld');
-      if (!jsonLdEl) {
-        jsonLdEl = document.createElement('script');
-        jsonLdEl.id = 'chickchau-jsonld';
-        jsonLdEl.type = 'application/ld+json';
-        document.head.appendChild(jsonLdEl);
-      }
-      jsonLdEl.textContent = buildStructuredDataJsonLd(productionOrigin);
-    } else {
-      // Never leak placeholder domains or preview hostnames into canonical or structured data
-      removeElements('link[rel="canonical"]');
-      removeElements('meta[property="og:url"]');
-      removeElements('script#chickchau-jsonld');
+    let canonicalEl = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (!canonicalEl) {
+      canonicalEl = document.createElement('link');
+      canonicalEl.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonicalEl);
     }
+    canonicalEl.setAttribute('href', canonicalHref);
+
+    upsertMetaTag('meta[property="og:url"]', 'property', 'og:url', canonicalHref);
+
+    let jsonLdEl = document.head.querySelector<HTMLScriptElement>('script#chickchau-jsonld');
+    if (!jsonLdEl) {
+      jsonLdEl = document.createElement('script');
+      jsonLdEl.id = 'chickchau-jsonld';
+      jsonLdEl.type = 'application/ld+json';
+      document.head.appendChild(jsonLdEl);
+    }
+    jsonLdEl.textContent = buildStructuredDataJsonLd(productionOrigin);
   }
 }

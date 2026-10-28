@@ -5,7 +5,12 @@ import {
   HOMEPAGE_TITLE,
   CART_TITLE,
   CART_DESCRIPTION,
+  DEFAULT_PRODUCTION_SITE_URL,
   OG_IMAGE_PATH,
+  OG_IMAGE_TYPE,
+  OG_IMAGE_WIDTH,
+  OG_IMAGE_HEIGHT,
+  OG_IMAGE_ALT,
   LOGO_PATH,
   normalizeProductionSiteUrl,
   normalizeGoogleSiteVerification,
@@ -13,7 +18,10 @@ import {
 } from '../config/siteConfig.ts';
 
 export function getProductionSiteOrigin(): string | null {
-  return normalizeProductionSiteUrl(process.env.SITE_URL || process.env.VITE_SITE_URL);
+  return (
+    normalizeProductionSiteUrl(process.env.SITE_URL || process.env.VITE_SITE_URL) ||
+    DEFAULT_PRODUCTION_SITE_URL
+  );
 }
 
 export function getGoogleSiteVerificationToken(): string | null {
@@ -75,15 +83,15 @@ export function injectRouteSeoMetadata(rawHtml: string, requestPath: string): st
   const normalizedPath = requestPath === '/cart' || requestPath.startsWith('/cart?') ? '/cart' : '/';
   const isCart = normalizedPath === '/cart';
 
-  const siteOrigin = getProductionSiteOrigin();
+  const siteOrigin = getProductionSiteOrigin() || DEFAULT_PRODUCTION_SITE_URL;
   const gscVerification = getGoogleSiteVerificationToken();
 
   const title = isCart ? CART_TITLE : HOMEPAGE_TITLE;
   const description = isCart ? CART_DESCRIPTION : HOMEPAGE_DESCRIPTION;
   const robotsContent = isCart ? 'noindex, nofollow' : 'index, follow';
 
-  const canonicalUrl = !isCart && siteOrigin ? `${siteOrigin}/` : null;
-  const ogImageUrl = siteOrigin ? `${siteOrigin}${OG_IMAGE_PATH}` : OG_IMAGE_PATH;
+  const canonicalUrl = !isCart ? `${siteOrigin}/` : null;
+  const ogImageUrl = `${siteOrigin}${OG_IMAGE_PATH}`;
 
   const headTags: string[] = [
     `<title>${escapeHtml(title)}</title>`,
@@ -95,10 +103,16 @@ export function injectRouteSeoMetadata(rawHtml: string, requestPath: string): st
     `<meta property="og:site_name" content="${escapeHtml(BRAND_NAME)}" />`,
     `<meta property="og:locale" content="id_ID" />`,
     `<meta property="og:image" content="${escapeHtml(ogImageUrl)}" />`,
+    `<meta property="og:image:secure_url" content="${escapeHtml(ogImageUrl)}" />`,
+    `<meta property="og:image:type" content="${escapeHtml(OG_IMAGE_TYPE)}" />`,
+    `<meta property="og:image:width" content="${escapeHtml(OG_IMAGE_WIDTH)}" />`,
+    `<meta property="og:image:height" content="${escapeHtml(OG_IMAGE_HEIGHT)}" />`,
+    `<meta property="og:image:alt" content="${escapeHtml(OG_IMAGE_ALT)}" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
     `<meta name="twitter:title" content="${escapeHtml(title)}" />`,
     `<meta name="twitter:description" content="${escapeHtml(description)}" />`,
     `<meta name="twitter:image" content="${escapeHtml(ogImageUrl)}" />`,
+    `<meta name="twitter:image:alt" content="${escapeHtml(OG_IMAGE_ALT)}" />`,
   ];
 
   if (canonicalUrl) {

@@ -17,7 +17,12 @@ export const HOMEPAGE_DESCRIPTION =
 export const CART_TITLE = 'Keranjang & Checkout | CHICKCHAU';
 export const CART_DESCRIPTION =
   'Selesaikan pesanan Chikchau Capcin dan Crispy Chickchau kamu di CHICKCHAU melalui WhatsApp.';
-export const OG_IMAGE_PATH = '/og-image.png';
+export const DEFAULT_PRODUCTION_SITE_URL = 'https://www.chickchau.my.id';
+export const OG_IMAGE_PATH = '/assets/og-images.png';
+export const OG_IMAGE_TYPE = 'image/png';
+export const OG_IMAGE_WIDTH = '1200';
+export const OG_IMAGE_HEIGHT = '630';
+export const OG_IMAGE_ALT = 'CHICKCHAU logo: a line-art chicken beside an iced drink';
 export const LOGO_PATH = '/logo.png';
 
 export const SEO_DEFAULTS = {
@@ -28,8 +33,12 @@ export const SEO_DEFAULTS = {
   locale: 'id_ID',
   language: 'id',
   themeColor: '#710014',
+  defaultSiteUrl: DEFAULT_PRODUCTION_SITE_URL,
   ogImagePath: OG_IMAGE_PATH,
-  ogImageAlt: 'CHICKCHAU logo: a line-art chicken beside an iced drink',
+  ogImageType: OG_IMAGE_TYPE,
+  ogImageWidth: OG_IMAGE_WIDTH,
+  ogImageHeight: OG_IMAGE_HEIGHT,
+  ogImageAlt: OG_IMAGE_ALT,
 } as const;
 
 const PLACEHOLDER_DOMAIN_PATTERNS = [

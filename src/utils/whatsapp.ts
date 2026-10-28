@@ -2,9 +2,7 @@ import { formatRupiah } from './formatters';
 import { CheckoutFormData } from './validation';
 import {
   Product,
-  BUSINESS_INFO,
-  SHIPPING_RATE_PER_KM,
-  calculateShippingPromo
+  BUSINESS_INFO
 } from '../data/products';
 import {
   WHATSAPP_INTERNATIONAL_NUMBER,
@@ -45,13 +43,7 @@ export function generateClientOrderReference(now = new Date()): string {
 }
 
 export function buildWhatsAppMessage(order: OrderDetails): string {
-  const { orderReference, items, totalQuantity, orderSubtotal, customerData, distanceKm } = order;
-
-  const promo = calculateShippingPromo(null, customerData.googleMapsUrl);
-  const resolvedDistanceKm =
-    typeof distanceKm === 'number' && distanceKm > 0 ? Math.max(1, Math.round(distanceKm)) : promo.distanceKm;
-  const originalShippingFee = resolvedDistanceKm * SHIPPING_RATE_PER_KM;
-  const originalTotalWithShipping = orderSubtotal + originalShippingFee;
+  const { orderReference, items, totalQuantity, orderSubtotal, customerData } = order;
 
   const itemsText = items
     .map((item, index) => {
@@ -60,50 +52,35 @@ export function buildWhatsAppMessage(order: OrderDetails): string {
     })
     .join('\n\n');
 
-  const notesText =
-    customerData.notes && customerData.notes.trim().length > 0
-      ? customerData.notes.trim()
-      : 'Tidak ada';
-
-  return [
-    'Halo CHICKCHAU! Saya ingin melakukan Pre-Order (Minimal H-1).',
+  const lines = [
+    'HALO CHICKCHAU! Saya mau Pre-Order (Minimal H-1).',
     '',
-    '*DETAIL PESANAN*',
-    '',
+    'DETAIL PESANAN',
     `Ref: ${orderReference}`,
-    `Sistem: ${BUSINESS_INFO.operatingHours}`,
+    'Sistem: Pre-Order (Minimal H-1)',
     `Area Layanan: ${BUSINESS_INFO.locationCity}`,
     '',
     itemsText,
     '',
-    '*RINGKASAN BIAYA & PROMO ONGKIR*',
+    'RINGKASAN BIAYA & PROMO',
+    `Total Item: ${totalQuantity}`,
+    `Subtotal Produk: ${formatRupiah(orderSubtotal)}`,
+    `Total Pengiriman: Rp0 (${BUSINESS_INFO.shippingPromoLabel})`,
+    `Total Pembayaran: ${formatRupiah(orderSubtotal)}`,
     '',
-    `Total item: ${totalQuantity}`,
-    `Subtotal produk: ${formatRupiah(orderSubtotal)}`,
-    `Total pengiriman: ~${formatRupiah(originalShippingFee)}~ Rp0 (${BUSINESS_INFO.shippingPromoLabel})`,
-    `Total pembayaran: ~${formatRupiah(originalTotalWithShipping)}~ *${formatRupiah(orderSubtotal)}*`,
-    '',
-    '*DATA PELANGGAN*',
-    '',
+    'DATA PELANGGAN',
     `Nama: ${customerData.fullName.trim()}`,
     `WhatsApp: ${customerData.whatsappPhone.trim()}`,
     '',
-    '*ALAMAT PENGANTARAN (TABANAN / DENPASAR, BALI)*',
-    '',
-    customerData.deliveryAddress.trim(),
-    '',
-    '*LOKASI GOOGLE MAPS*',
-    '',
-    customerData.googleMapsUrl.trim(),
-    '',
-    '*CATATAN TAMBAHAN*',
-    '',
-    notesText,
-    '',
-    'Mohon konfirmasi jadwal Pre-Order (Minimal H-1) saya.',
-    '',
-    'Terima kasih!'
-  ].join('\n');
+    'ALAMAT PENGANTARAN',
+    customerData.deliveryAddress.trim()
+  ];
+
+  if (customerData.notes && customerData.notes.trim().length > 0) {
+    lines.push('', 'CATATAN TAMBAHAN', customerData.notes.trim());
+  }
+
+  return lines.join('\n');
 }
 
 export function generateWhatsAppUrl(order: OrderDetails): string {

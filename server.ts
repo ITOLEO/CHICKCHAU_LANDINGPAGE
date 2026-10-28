@@ -109,13 +109,22 @@ export async function createAppServer(options: { isProduction?: boolean } = {}) 
     });
   });
 
-  // 7. Dynamic /robots.txt and /sitemap.xml
+  // 7. Dynamic /robots.txt, /sitemap.xml, and /assets/og-images alias
   app.get('/robots.txt', (req: Request, res: Response) => {
     robotsHandler(req, res);
   });
 
   app.get('/sitemap.xml', (req: Request, res: Response) => {
     sitemapHandler(req, res);
+  });
+
+  app.get(['/assets/og-images', '/assets/og-images.png'], (_req: Request, res: Response) => {
+    const prodImgPath = path.resolve(process.cwd(), 'dist/assets/og-images.png');
+    const publicImgPath = path.resolve(process.cwd(), 'public/assets/og-images.png');
+    const targetPath = isProd && fs.existsSync(prodImgPath) ? prodImgPath : publicImgPath;
+    res.setHeader('Content-Type', 'image/png');
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+    res.sendFile(targetPath);
   });
 
   // 8. Frontend Serving (Vite Middleware in Dev, Static dist/ in Production)
