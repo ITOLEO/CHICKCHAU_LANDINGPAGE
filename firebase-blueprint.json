@@ -1,0 +1,297 @@
+{
+  "entities": {
+    "Order": {
+      "title": "Order",
+      "description": "Server-validated customer order record for CHICKCHAU.",
+      "type": "object",
+      "properties": {
+        "orderId": {
+          "type": "string",
+          "description": "Server-generated unique order reference ID.",
+          "minLength": 10,
+          "maxLength": 64,
+          "pattern": "^ORD-[0-9]{8}-[A-Z0-9]{6}$"
+        },
+        "idempotencyKey": {
+          "type": "string",
+          "description": "Client-generated idempotency key for duplicate submission prevention.",
+          "minLength": 8,
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "payloadHash": {
+          "type": "string",
+          "description": "SHA-256 hex digest of the normalized order request payload.",
+          "minLength": 64,
+          "maxLength": 64,
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "productIds": {
+          "type": "array",
+          "description": "Bounded list of ordered product IDs (max 2 items: capcin, shihlin)."
+        },
+        "totalQuantity": {
+          "type": "integer",
+          "description": "Total integer quantity across all ordered items."
+        },
+        "orderSubtotal": {
+          "type": "integer",
+          "description": "Authoritative server-calculated subtotal in integer IDR."
+        },
+        "provisionalTotal": {
+          "type": "integer",
+          "description": "Provisional order total in integer IDR excluding unconfirmed delivery fee."
+        },
+        "deliveryFeeStatus": {
+          "type": "string",
+          "description": "Delivery fee confirmation status.",
+          "enum": ["unconfirmed_whatsapp", "confirmed"]
+        },
+        "currency": {
+          "type": "string",
+          "description": "ISO currency code.",
+          "enum": ["IDR"]
+        },
+        "status": {
+          "type": "string",
+          "description": "Explicit order lifecycle state.",
+          "enum": [
+            "pending_whatsapp",
+            "awaiting_admin_confirmation",
+            "confirmed",
+            "preparing",
+            "completed",
+            "cancelled"
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server-generated creation timestamp."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server-generated update timestamp."
+        }
+      },
+      "required": [
+        "orderId",
+        "idempotencyKey",
+        "payloadHash",
+        "productIds",
+        "totalQuantity",
+        "orderSubtotal",
+        "provisionalTotal",
+        "deliveryFeeStatus",
+        "currency",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "OrderCustomerPII": {
+      "title": "OrderCustomerPII",
+      "description": "Isolated customer delivery and contact PII for an order.",
+      "type": "object",
+      "properties": {
+        "orderId": {
+          "type": "string",
+          "description": "Parent order ID reference.",
+          "minLength": 10,
+          "maxLength": 64,
+          "pattern": "^ORD-[0-9]{8}-[A-Z0-9]{6}$"
+        },
+        "customerName": {
+          "type": "string",
+          "description": "Customer full name.",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "customerPhone": {
+          "type": "string",
+          "description": "Customer WhatsApp phone number.",
+          "minLength": 9,
+          "maxLength": 20,
+          "pattern": "^(?:08|\\+628|628)[0-9]{7,12}$"
+        },
+        "deliveryAddress": {
+          "type": "string",
+          "description": "Full street delivery address.",
+          "minLength": 10,
+          "maxLength": 300
+        },
+        "googleMapsUrl": {
+          "type": "string",
+          "description": "Validated HTTPS Google Maps location URL.",
+          "minLength": 12,
+          "maxLength": 500
+        },
+        "notes": {
+          "type": "string",
+          "description": "Optional customer order notes.",
+          "maxLength": 250
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server-generated creation timestamp."
+        }
+      },
+      "required": [
+        "orderId",
+        "customerName",
+        "customerPhone",
+        "deliveryAddress",
+        "googleMapsUrl",
+        "notes",
+        "createdAt"
+      ]
+    },
+    "OrderItem": {
+      "title": "OrderItem",
+      "description": "Individual product line item belonging to an Order.",
+      "type": "object",
+      "properties": {
+        "orderId": {
+          "type": "string",
+          "description": "Parent order ID reference.",
+          "minLength": 10,
+          "maxLength": 64,
+          "pattern": "^ORD-[0-9]{8}-[A-Z0-9]{6}$"
+        },
+        "productId": {
+          "type": "string",
+          "description": "Catalog product identifier.",
+          "enum": ["capcin", "shihlin"]
+        },
+        "productName": {
+          "type": "string",
+          "description": "Product name snapshot at order time.",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "unitPrice": {
+          "type": "integer",
+          "description": "Authoritative unit price in integer IDR."
+        },
+        "quantity": {
+          "type": "integer",
+          "description": "Ordered integer quantity between 1 and 50."
+        },
+        "lineSubtotal": {
+          "type": "integer",
+          "description": "Server-calculated line subtotal (unitPrice * quantity) in integer IDR."
+        }
+      },
+      "required": [
+        "orderId",
+        "productId",
+        "productName",
+        "unitPrice",
+        "quantity",
+        "lineSubtotal"
+      ]
+    },
+    "CatalogProduct": {
+      "title": "CatalogProduct",
+      "description": "Authoritative product catalog entry with integer IDR pricing.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Product identifier.",
+          "enum": ["capcin", "shihlin"]
+        },
+        "name": {
+          "type": "string",
+          "description": "Official product display name.",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "shortName": {
+          "type": "string",
+          "description": "Short product name.",
+          "minLength": 2,
+          "maxLength": 40
+        },
+        "unitPrice": {
+          "type": "integer",
+          "description": "Authoritative integer IDR price."
+        },
+        "available": {
+          "type": "boolean",
+          "description": "Whether the product can currently be ordered."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of last admin catalog update."
+        },
+        "updatedBy": {
+          "type": "string",
+          "description": "UID of the administrator who updated the catalog.",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "shortName",
+        "unitPrice",
+        "available",
+        "updatedAt",
+        "updatedBy"
+      ]
+    },
+    "AdminMember": {
+      "title": "AdminMember",
+      "description": "Trusted administrator registry entry.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Administrator Firebase Auth UID.",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Verified administrator email.",
+          "minLength": 5,
+          "maxLength": 120
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when admin entry was created."
+        }
+      },
+      "required": ["uid", "email", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/orders/{orderId}": {
+      "schema": { "$ref": "#/entities/Order" },
+      "description": "Core order records (non-PII financial and status state)."
+    },
+    "/orders/{orderId}/private/{docId}": {
+      "schema": { "$ref": "#/entities/OrderCustomerPII" },
+      "description": "Isolated customer delivery and phone PII for an order (Split Collection Pillar 6)."
+    },
+    "/orders/{orderId}/items/{itemId}": {
+      "schema": { "$ref": "#/entities/OrderItem" },
+      "description": "Subcollection of validated order line items (Master Gate Pillar 1)."
+    },
+    "/catalog/{productId}": {
+      "schema": { "$ref": "#/entities/CatalogProduct" },
+      "description": "Authoritative product pricing catalog readable publicly and writable only by verified admins."
+    },
+    "/admins/{adminUid}": {
+      "schema": { "$ref": "#/entities/AdminMember" },
+      "description": "Trusted administrator allowlist documents."
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "CHICKCHAU",
+  "description": "Nikmati Taiwanese-style crispy chicken dan cappuccino cincau dari CHICKCHAU. Pilih produk favoritmu dan pesan langsung melalui WhatsApp.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,1234 @@
+# CHICKCHAU PRODUCTION UPGRADE
+## Backend, Order Management, Technical SEO, Google Search Console, and GA4
+
+### 1. ROLE AND EXECUTION MODE
+
+Act as a senior full-stack engineer, application security engineer, technical SEO specialist, and Google Analytics 4 implementation engineer.
+
+You are working inside the EXISTING CHICKCHAU application in Google AI Studio Build mode.
+
+Your task is to inspect, upgrade, implement, and test the existing project.
+
+This is an implementation task, not a request for a proposal or a tutorial.
+
+Do not create a new project.
+Do not replace the application with a generic template.
+Do not unnecessarily redesign the existing website.
+Do not remove working functionality without a demonstrated technical reason.
+
+Preserve the existing brand identity, product catalog, responsive interface, shopping cart, checkout experience, and Google Maps integration.
+
+Make changes directly in the existing project using the tools and capabilities supported by the current Google AI Studio environment.
+
+Inspect the actual project before editing.
+
+Never claim a feature is implemented or tested unless the corresponding code and behavior have been verified.
+
+---
+
+# 2. EXISTING PROJECT BASELINE
+
+The existing project contains:
+
+- React 19.
+- TypeScript.
+- Vite.
+- Tailwind CSS.
+- Lucide React.
+- Motion.
+- @vis.gl/react-google-maps.
+- A custom React routing implementation.
+- CartContext with localStorage persistence.
+- A product catalog in src/data/products.ts.
+- Checkout UI in src/components/CartPage.tsx.
+- Google Maps functionality in src/components/DeliveryMapPicker.tsx.
+- WhatsApp message generation in src/utils/whatsapp.ts.
+- Order reference generation in src/utils/orderRef.ts.
+- Client-side validation in src/utils/validation.ts.
+- A public price configuration modal in src/components/PriceConfigModal.tsx.
+- Initial SEO metadata in index.html.
+- Existing brand and product image assets in public/assets/.
+
+The package.json contains Express as a dependency, but the existing project does not demonstrate a working order API or database integration.
+
+The presence of Express in package.json is not proof that a production backend exists.
+
+The presence of server-related metadata is not proof that database persistence, order validation, or server-side routing is implemented.
+
+Audit the actual runtime, server entry points, build scripts, and deployment configuration before deciding how to add the backend.
+
+Do not assume Firebase, Firestore, Google Analytics, Google Search Console, or a production domain is already configured.
+
+---
+
+# 3. EXECUTION RULES
+
+Follow this sequence:
+
+1. Inspect the existing project.
+2. Identify missing capabilities and security problems.
+3. Establish the smallest viable architecture.
+4. Implement the backend and order persistence.
+5. Fix the WhatsApp destination and price authority.
+6. Implement production-ready SEO configuration.
+7. Implement GA4 integration.
+8. Test the actual implementation.
+9. Fix regressions.
+10. Report verified results and remaining external configuration.
+
+Do not stop after producing a plan.
+
+Do not replace working components merely to match a preferred architecture.
+
+Do not install redundant dependencies.
+
+Do not invent APIs, environment values, deployment capabilities, credentials, or successful test results.
+
+If a required operation needs user authorization or an external account, perform the available setup steps and clearly identify the remaining action.
+
+---
+
+# 4. PRIORITY ZERO: FIX THE WHATSAPP DESTINATION
+
+The intended CHICKCHAU WhatsApp destination is:
+
+087787190755
+
+Normalized international number:
+
+6287787190755
+
+Canonical Click to Chat URL:
+
+https://wa.me/6287787190755
+
+The existing code contains a different destination:
+
+628112199334
+
+This is a confirmed inconsistency that must be corrected.
+
+Search the entire project for all instances of the old number and replace them where they are used as the CHICKCHAU order destination.
+
+Centralize the destination in one authoritative shared configuration.
+
+At minimum, audit:
+
+- src/data/products.ts
+- src/utils/whatsapp.ts
+- src/components/CartPage.tsx
+- All other components or utilities that construct WhatsApp URLs.
+
+Do not duplicate the destination across independent configuration objects.
+
+Do not confuse the business order destination with the customer's personal WhatsApp number.
+
+The customer's WhatsApp number is separate information collected for order communication.
+
+Test that the generated WhatsApp URL points to the intended destination and that the encoded message is correct.
+
+---
+
+# 5. PRODUCT CATALOG AND PRICE AUTHORITY
+
+CHICKCHAU has exactly two primary products.
+
+Product 1:
+- ID: capcin
+- Name: Cappuccino Cincau
+- Short name: Capcin
+
+Product 2:
+- ID: shihlin
+- Name: Shihlin
+
+The current code contains these initial prices:
+
+- Cappuccino Cincau: IDR 7,000.
+- Shihlin: IDR 30,000.
+
+Treat these as existing project defaults, not as confirmation that the business owner has approved them as final production prices.
+
+Preserve the current values unless an authorized configuration specifies otherwise.
+
+Inspect the current PriceConfigModal and CartContext.
+
+The current price configuration uses browser localStorage, which is not a trusted source of commercial pricing.
+
+Implement the following changes:
+
+1. Establish an authoritative server-readable product catalog.
+2. Resolve all order prices from trusted server-side data.
+3. Calculate line subtotals on the server.
+4. Calculate order subtotals on the server.
+5. Reject unknown product IDs.
+6. Reject unavailable products.
+7. Reject invalid quantities.
+8. Reject missing or unconfigured prices.
+9. Reject empty orders.
+10. Reject invalid monetary values.
+11. Use integer IDR values.
+12. Do not accept client-calculated totals as authoritative.
+
+The browser may display estimated totals for convenience, but the backend must independently calculate the authoritative order summary.
+
+Do not allow arbitrary public users to change official product prices.
+
+If the existing price configuration modal is useful during development, retain it only in an appropriate development workflow or replace it with a properly protected administrative mechanism.
+
+Do not expose a public price-editing interface in production.
+
+If the business needs to edit prices after deployment, implement an authenticated administrative mechanism with server-side authorization.
+
+Do not allow the user to assign themselves administrator privileges.
+
+Do not silently treat a missing price as zero.
+
+---
+
+# 6. BACKEND RUNTIME COMPATIBILITY
+
+The existing application uses React and Vite.
+
+Inspect the current Google AI Studio Build runtime and deployment capabilities before implementing the backend.
+
+Use the supported full-stack application workflow available in the current environment.
+
+Determine whether the existing Express dependency can be used reliably with the actual deployment target.
+
+If a Node.js server runtime is supported, implement the backend using the existing framework or the smallest compatible addition.
+
+If the deployment target requires a different supported arrangement, follow that arrangement instead.
+
+Do not assume that Vite development middleware is a production backend.
+
+Do not assume that a Vite static build automatically serves API routes.
+
+Do not add a server that works only locally but is absent from the production deployment.
+
+Ensure the actual production deployment can serve both the frontend and the backend endpoints.
+
+Update package scripts and build configuration only when necessary.
+
+Preserve the existing development workflow.
+
+Avoid creating duplicate server entry points.
+
+Do not introduce an unnecessary framework migration merely to add an order API.
+
+---
+
+# 7. DATABASE AND PERSISTENT ORDER STORAGE
+
+Use Firebase Cloud Firestore if it can be integrated through the supported Google AI Studio workflow and is appropriate for the current deployment.
+
+Inspect existing integrations before adding Firebase dependencies.
+
+If Firestore is not connected:
+
+1. Use the supported integration and authorization workflow.
+2. Request the necessary user approval.
+3. Configure the database using the actual project.
+4. Implement the necessary access controls.
+5. Verify a real database operation where credentials and access are available.
+
+Do not fabricate a Firebase project ID.
+Do not invent service account credentials.
+Do not claim that the database has been connected when it has not.
+
+If Firestore cannot be configured automatically, implement the smallest compatible adapter or integration boundary and clearly report what remains.
+
+Do not use localStorage as a substitute for server-side order persistence.
+
+Do not introduce a second database without a compelling reason.
+
+## Order data model
+
+Create a persistent order record containing, as appropriate:
+
+- Server-generated order ID.
+- Product IDs.
+- Product name snapshots.
+- Unit prices.
+- Quantities.
+- Line subtotals.
+- Order subtotal.
+- Currency.
+- Customer name.
+- Customer phone.
+- Delivery address.
+- Validated Google Maps URL.
+- Optional customer notes.
+- Order status.
+- Server-generated creation timestamp.
+- Server-generated update timestamp.
+
+Use a clear schema compatible with the actual database.
+
+Do not persist unnecessary personal information.
+
+Do not fabricate delivery fees.
+
+The delivery fee is not currently configured as an authoritative business rule.
+
+Until it is configured, represent it as unknown and clearly label the total as provisional.
+
+Do not claim that an order's final payable amount is known if the delivery fee remains unconfirmed.
+
+---
+
+# 8. ORDER API
+
+Implement an API compatible with the actual server runtime.
+
+Recommended logical endpoints:
+
+POST /api/orders
+
+GET /api/orders/:orderId
+
+GET /api/admin/orders
+
+PATCH /api/admin/orders/:orderId
+
+Adapt these endpoints to the actual application routing and deployment architecture.
+
+Do not create duplicate route implementations.
+
+## POST /api/orders
+
+The customer may submit:
+
+- Product IDs.
+- Quantities.
+- Customer name.
+- Customer phone.
+- Delivery address.
+- Google Maps URL.
+- Optional notes.
+
+The client must not determine the authoritative:
+
+- Product prices.
+- Line subtotals.
+- Order subtotal.
+- Delivery fee.
+- Final order total.
+- Order status.
+- Creation timestamp.
+- Order ID.
+
+The server must validate all fields and calculate the monetary values itself.
+
+Apply reasonable request-size limits and field-length limits.
+
+Validate that all quantities are positive integers and below a reasonable configured maximum.
+
+Validate Google Maps URLs against permitted HTTPS Google Maps hosts and expected URL structures.
+
+Do not accept arbitrary URL schemes.
+
+Do not trust browser-side form validation as the only validation layer.
+
+Return structured error responses.
+
+Example:
+
+{
+  "error": {
+    "code": "INVALID_ORDER",
+    "message": "The submitted order is invalid."
+  }
+}
+
+Do not expose stack traces, database credentials, or internal server configuration in public responses.
+
+## Order creation and duplicate prevention
+
+Implement an idempotency strategy appropriate to the selected architecture.
+
+Repeated submission attempts should not create duplicate orders when the same logical request is retried with the same idempotency key.
+
+Do not reuse an idempotency key for unrelated orders.
+
+Do not create a new order record merely because opening WhatsApp is retried.
+
+If an order has been created but WhatsApp fails to open, preserve the existing order reference and let the customer retry the WhatsApp handoff.
+
+---
+
+# 9. ORDER STATUS AND ADMIN SECURITY
+
+Use explicit order states.
+
+Suggested states:
+
+- pending_whatsapp
+- awaiting_admin_confirmation
+- confirmed
+- preparing
+- completed
+- cancelled
+
+The initial state must reflect that the order has been created but not yet confirmed.
+
+Opening WhatsApp does not mean that a message was sent.
+
+Preparing a message does not mean that an order was confirmed.
+
+Do not mark an order completed merely because the backend created a record.
+
+Enforce permitted status transitions on the server.
+
+If administrative order management is implemented, protect all administrative operations with verified authentication and server-side authorization.
+
+Do not rely on:
+
+- Hidden frontend buttons.
+- An obscure admin URL.
+- Frontend-only role checks.
+- Unverified role claims.
+- Public database access.
+
+Use a trusted administrator allowlist or another explicit authorization mechanism.
+
+Do not permit unauthenticated users to list all customer orders.
+
+Do not permit public clients to modify order statuses.
+
+Use least-privilege database access.
+
+Account for the fact that privileged server credentials may bypass Firestore Security Rules.
+
+Never expose service account credentials to browser code.
+
+---
+
+# 10. WHATSAPP CHECKOUT WORKFLOW
+
+Preserve the existing checkout interface and Google Maps integration.
+
+Implement this sequence:
+
+1. Customer selects products.
+2. Customer adjusts quantities.
+3. Customer opens the cart.
+4. Customer enters delivery information.
+5. Frontend submits the order to the backend.
+6. Backend validates the order.
+7. Backend calculates authoritative prices.
+8. Backend persists the order.
+9. Backend returns an order reference and validated order summary.
+10. Frontend generates a WhatsApp message using the server response.
+11. Frontend opens WhatsApp.
+12. Customer reviews and manually sends the message.
+13. Administrator confirms the order through the authorized workflow.
+
+The WhatsApp message must contain:
+
+- Order reference.
+- Product names.
+- Quantities.
+- Unit prices.
+- Line subtotals.
+- Order subtotal.
+- Delivery fee status.
+- Provisional total, when applicable.
+- Customer name.
+- Customer phone.
+- Delivery address.
+- Google Maps link.
+- Optional notes.
+
+Use encodeURIComponent when constructing the WhatsApp URL.
+
+Use the centralized destination:
+
+https://wa.me/6287787190755
+
+Do not claim the message was sent automatically.
+
+If the browser blocks the new tab, show a clear retry action and preserve the order reference.
+
+Do not automatically clear the cart before the application has established a safe order handoff.
+
+Do not automatically mark the order confirmed.
+
+Keep customer-facing messages in Indonesian.
+
+---
+
+# 11. GOOGLE MAPS INTEGRATION
+
+The existing project already uses:
+
+- @vis.gl/react-google-maps.
+- DeliveryMapPicker.tsx.
+- Places autocomplete.
+- Interactive map selection.
+- Google Maps URL generation.
+- Error and quota handling.
+
+Audit and preserve this functionality.
+
+Do not rebuild it from scratch unless the existing implementation contains a demonstrated defect.
+
+Verify:
+
+- Required API key configuration.
+- API activation requirements.
+- Browser key referrer restrictions.
+- Places API access.
+- Map loading states.
+- Map error states.
+- Quota-exceeded handling.
+- Manual address fallback.
+- Manual Maps link fallback.
+- Correct propagation of selected location into checkout.
+- Correct WhatsApp message generation.
+
+The existing .env.example contains a VITE_GOOGLE_MAPS_API_KEY placeholder.
+
+Use the actual configuration supported by the project.
+
+A browser Maps API key is visible to the browser by design and must be restricted appropriately. Do not treat it as a server secret.
+
+Do not expose unrelated server credentials.
+
+Do not assume that a demo map ID or a placeholder API key is production-ready.
+
+Preserve a usable checkout path when Maps fails, subject to the business's actual delivery requirements.
+
+Do not invent a physical business address or delivery coverage area.
+
+---
+
+# 12. PRODUCTION DOMAIN AND CENTRALIZED URL CONFIGURATION
+
+The final production domain has not been provided.
+
+Do not invent one.
+
+Create a single authoritative production site URL configuration using the environment conventions supported by the project.
+
+Conceptual example:
+
+SITE_URL=https://YOUR-REAL-PRODUCTION-DOMAIN
+
+The example is a placeholder, not a deployable value.
+
+Use the same configured origin for:
+
+- Canonical URLs.
+- XML sitemap.
+- Open Graph URL.
+- Structured data.
+- Production internal URL generation.
+- Search Console documentation.
+
+Do not derive canonical URLs from arbitrary request Host headers or untrusted forwarded-host headers.
+
+Do not embed temporary Google AI Studio preview URLs into production SEO metadata.
+
+Do not silently fall back to localhost or an unverified hostname.
+
+If the production domain is missing, keep the implementation configurable and report that final production URL validation is blocked.
+
+Do not publish a placeholder domain as if it were real.
+
+---
+
+# 13. CANONICAL URL STRATEGY
+
+Audit the existing rendering and routing architecture before implementing canonical metadata.
+
+The current application uses custom React routing for:
+
+- /
+- /cart
+
+The homepage is the main public landing page.
+
+The cart is a transactional utility page and should not be included in the organic-search sitemap.
+
+Implement one consistent canonical strategy.
+
+## Homepage
+
+The homepage should have an absolute, self-referential canonical URL based on the configured production domain.
+
+## Cart
+
+The cart should use an appropriate noindex directive if it does not contain unique content intended for organic search.
+
+Do not include it in the sitemap.
+
+Do not block the cart in robots.txt merely to prevent indexing.
+
+Keep the route crawlable so the noindex directive can be discovered.
+
+## General rules
+
+For every indexable public page:
+
+- Use one canonical element.
+- Use an absolute HTTPS URL.
+- Use the configured preferred hostname.
+- Use a consistent trailing-slash policy.
+- Remove unnecessary tracking parameters from canonical identities.
+- Do not include URL fragments.
+- Do not canonicalize every route to the homepage.
+- Do not canonicalize to redirecting or nonexistent destinations.
+- Do not generate conflicting canonical tags.
+- Keep canonical URLs consistent with the sitemap and internal links.
+
+Do not use canonical tags as a substitute for redirects.
+
+Do not use robots.txt as a canonicalization mechanism.
+
+## Rendering requirements
+
+Determine whether the existing Vite application can reliably provide the required metadata in its initial HTML.
+
+If the current deployment supports static generation or server-side rendering with minimal architectural disruption, evaluate that approach.
+
+Do not migrate the whole application merely to add canonical tags.
+
+If client-side metadata management remains the appropriate architecture, ensure that the canonical element is created, updated, and removed correctly during navigation.
+
+Do not append another canonical element every time the user changes routes.
+
+Do not rely on JavaScript to correct conflicting canonical tags already present in the initial HTML.
+
+If reliable initial HTML metadata requires a deployment change, explain the limitation and implement the strongest compatible solution.
+
+## Canonical verification
+
+Verify:
+
+1. Homepage canonical matches the configured production URL.
+2. Cart has the intended indexing directive.
+3. Cart is excluded from the sitemap.
+4. Each actual indexable route has the correct canonical.
+5. Sitemap URLs exactly match their canonical identities.
+6. Internal links use the preferred routes.
+7. Open Graph URL matches the canonical.
+8. Structured data uses the production origin.
+9. No preview hostname remains in production metadata.
+10. Trailing-slash behavior is consistent.
+11. No duplicate canonical elements exist.
+12. No canonical points to a nonexistent page.
+
+Google determines its final canonical selection. Do not claim Google has accepted a canonical solely because the tag is present.
+
+---
+
+# 14. ROBOTS.TXT
+
+Implement a valid production robots.txt file.
+
+It must:
+
+- Permit crawling of the public homepage.
+- Permit access to assets required to render the page.
+- Avoid accidentally blocking CSS, JavaScript, and product images.
+- Reference the actual production sitemap URL.
+- Avoid placeholder hostnames.
+- Avoid incorrect staging or preview configuration.
+
+Do not block the cart solely to keep it out of search results.
+
+Use an appropriate noindex directive for the cart when necessary.
+
+Do not claim that robots.txt guarantees a URL can never appear in search results.
+
+Test that robots.txt is actually accessible from the deployed application.
+
+---
+
+# 15. XML SITEMAP
+
+Implement a valid XML sitemap at the expected production path.
+
+Use the actual production origin.
+
+Include only real public routes that are:
+
+- Intended for organic search.
+- Canonical.
+- Indexable.
+- Accessible with successful HTTP responses.
+
+The homepage is the primary expected sitemap entry.
+
+Do not invent additional product detail pages.
+
+The current project has two products displayed within the existing landing page. Do not create separate product URLs unless dedicated pages are actually implemented.
+
+Exclude:
+
+- Cart.
+- Private order routes.
+- Authentication routes.
+- Admin routes.
+- Noncanonical URLs.
+- Redirecting URLs.
+- Error pages.
+- Preview URLs.
+- Tracking parameter variants.
+
+Use absolute HTTPS URLs.
+
+Use lastmod only when a reliable modification timestamp is available.
+
+Do not fabricate dates.
+
+Do not create multiple competing sitemap implementations.
+
+If static sitemap generation is appropriate, ensure that production URLs are correct.
+
+If dynamic generation is more appropriate, implement it through the actual server runtime.
+
+Verify that the sitemap is valid XML and accessible after deployment.
+
+A sitemap helps discovery but does not guarantee indexing.
+
+---
+
+# 16. TECHNICAL SEO METADATA
+
+Preserve and improve the existing metadata in index.html.
+
+Recommended homepage title:
+
+CHICKCHAU | Crispy Bites, Creamy Sips
+
+Recommended homepage description:
+
+"Nikmati Taiwanese-style crispy chicken dan cappuccino cincau dari CHICKCHAU. Pilih produk favoritmu dan pesan langsung melalui WhatsApp."
+
+Use Indonesian as the primary page language.
+
+Implement or verify:
+
+- Unique page title.
+- Meta description.
+- Canonical URL.
+- Viewport metadata.
+- Favicon.
+- Theme color.
+- Open Graph metadata.
+- Public social sharing image.
+- Descriptive image alt attributes.
+- Correct heading hierarchy.
+- Stable metadata during navigation.
+
+Preserve the existing visual design.
+
+Do not stuff keywords into the metadata.
+
+Do not invent ingredients, awards, certifications, business locations, testimonials, operating hours, or delivery coverage.
+
+## Open Graph
+
+Implement:
+
+- og:title
+- og:description
+- og:type
+- og:url
+- og:image
+- og:site_name
+- og:locale
+
+Use the production canonical URL for og:url.
+
+Use a real, publicly accessible HTTPS image for og:image.
+
+Use the existing logo or an existing appropriate brand image if available.
+
+Do not reference local filesystem paths as public image URLs.
+
+Verify that the selected image exists.
+
+---
+
+# 17. STRUCTURED DATA
+
+Implement appropriate JSON-LD using schema.org vocabulary.
+
+Evaluate:
+
+- Organization.
+- WebSite.
+- FoodEstablishment only if the actual business information supports that entity and its attributes.
+
+Use the configured production origin.
+
+Use the actual logo asset when its public URL is known.
+
+Do not fabricate:
+
+- A street address.
+- Geographic coordinates.
+- Business hours.
+- Aggregate ratings.
+- Customer reviews.
+- Review counts.
+- Price ranges.
+- Delivery areas.
+- Social media profiles.
+
+Only include properties supported by actual business information and visible page content.
+
+Validate the JSON-LD syntax.
+
+Do not claim that structured data guarantees rich results.
+
+Do not create misleading or unsupported product information.
+
+---
+
+# 18. GOOGLE SEARCH CONSOLE
+
+Prepare the project for Google Search Console.
+
+Implement the technical prerequisites:
+
+- Correct production canonical.
+- Crawlable homepage.
+- Valid robots.txt.
+- Valid XML sitemap.
+- Correct indexing directives.
+- Accessible public assets.
+- No accidental homepage noindex.
+- No incorrect production URL.
+- No unnecessary authentication barrier on public content.
+
+Support verification through a centralized configuration mechanism.
+
+Conceptual example:
+
+GOOGLE_SITE_VERIFICATION=YOUR_REAL_VERIFICATION_TOKEN
+
+Use the actual configuration convention supported by the project.
+
+Do not invent a verification token.
+
+If using HTML meta-tag verification, emit the tag only when the real token is configured.
+
+Do not expose unrelated secrets.
+
+Do not claim the property has been verified merely because the application supports a verification tag.
+
+## Manual Search Console actions
+
+Document the following steps:
+
+1. Add the real production property.
+2. Complete ownership verification.
+3. Submit the production sitemap.
+4. Inspect the homepage.
+5. Request indexing when appropriate.
+6. Monitor the Page Indexing report.
+7. Compare user-declared and Google-selected canonical URLs.
+8. Investigate crawling or indexing errors.
+
+If the production domain is not configured, explain why final verification and sitemap submission must wait.
+
+Do not claim that the site is indexed without evidence.
+
+---
+
+# 19. GOOGLE ANALYTICS 4
+
+Integrate Google Analytics 4 using one centralized configuration.
+
+Conceptual example:
+
+GA4_MEASUREMENT_ID=G-XXXXXXXXXX
+
+The value is a placeholder.
+
+Do not invent a real Measurement ID.
+
+Do not initialize GA4 if the ID is absent or invalid.
+
+Use the official Google tag or a compatible implementation appropriate to the actual architecture.
+
+Avoid duplicate tag installation.
+
+Avoid loading multiple Analytics libraries unnecessarily.
+
+## Events
+
+Implement meaningful events.
+
+### page_view
+
+Track page views for supported public routes.
+
+Avoid duplicate events caused by automatic tracking and manual History API tracking.
+
+### view_item_list
+
+Track product catalog visibility where appropriate.
+
+### select_item
+
+Track meaningful product selection where appropriate.
+
+### add_to_cart
+
+Track additions to the cart.
+
+Include non-personal product metadata and quantity.
+
+### remove_from_cart
+
+Track product removal.
+
+### begin_checkout
+
+Track the beginning of checkout.
+
+### add_shipping_info
+
+Track delivery information submission when the event is appropriate for the actual flow.
+
+### whatsapp_checkout_click
+
+Track the action of opening WhatsApp with a prepared order message.
+
+### order_created
+
+Track successful server-confirmed order creation.
+
+Only fire this event after the backend confirms that the order record was created successfully.
+
+### purchase
+
+Do not fire purchase merely because:
+
+- The cart was submitted.
+- An order document was created.
+- WhatsApp opened.
+- A message was prepared.
+- A customer clicked a link.
+
+Only emit purchase when a reliable, explicitly defined successful transaction or order-confirmation event exists and satisfies the intended reporting semantics.
+
+If CHICKCHAU does not yet have a reliable confirmation workflow, do not emit purchase.
+
+## Analytics privacy
+
+Never send the following information to GA4:
+
+- Customer name.
+- Customer phone number.
+- Full delivery address.
+- Google Maps URL containing customer location.
+- Customer notes.
+- Raw order contents containing personal data.
+- Other personally identifiable information.
+
+Do not place personal data in page URLs or Analytics event parameters.
+
+Avoid duplicate events.
+
+Ensure Analytics does not initialize without the correct configuration.
+
+Implement consent behavior appropriate to the actual deployment requirements and audience.
+
+If nonessential analytics storage requires consent, implement the necessary consent flow before enabling it.
+
+Do not claim legal compliance merely because a banner exists.
+
+## Manual GA4 configuration
+
+Document:
+
+1. Creating the GA4 property.
+2. Creating the web data stream.
+3. Obtaining the real Measurement ID.
+4. Configuring the application.
+5. Verifying Realtime events.
+6. Testing DebugView when available.
+7. Confirming that production events are not duplicated.
+
+Do not claim production analytics is operational until verified.
+
+---
+
+# 20. FRONTEND AND ORDERING REGRESSION PROTECTION
+
+Preserve the existing React components and design unless a change is necessary.
+
+Verify:
+
+- Navbar navigation.
+- Homepage.
+- Product cards.
+- Product quantity controls.
+- Floating cart button.
+- Cart page.
+- Customer information form.
+- Delivery address input.
+- Google Maps location selection.
+- Maps fallback.
+- WhatsApp message generation.
+- Responsive layout.
+- Loading and error states.
+- Accessibility and keyboard navigation.
+
+The existing CartContext may continue to maintain the customer's temporary cart in localStorage.
+
+However, cart persistence must not be confused with server-side order persistence.
+
+Do not trust localStorage for official pricing or order authorization.
+
+Preserve the existing two-product catalog.
+
+Do not add additional products.
+
+Do not invent new business rules.
+
+Keep customer-facing text in Indonesian.
+
+---
+
+# 21. PERFORMANCE AND ACCESSIBILITY
+
+Preserve the existing brand palette and typography.
+
+Optimize:
+
+- Product images.
+- Asset loading.
+- Font loading.
+- JavaScript bundle size.
+- Layout stability.
+- Responsive behavior.
+- Third-party script loading.
+
+Avoid unnecessary dependencies and continuous decorative animations.
+
+Maintain keyboard accessibility and visible focus indicators.
+
+Use the following Core Web Vitals as optimization targets:
+
+- LCP: 2.5 seconds or less.
+- INP: 200 milliseconds or less.
+- CLS: 0.1 or less.
+
+These are targets, not assumed results.
+
+Do not claim passing performance scores without actual measurements.
+
+---
+
+# 22. ENVIRONMENT CONFIGURATION
+
+Centralize the configuration required by the actual implementation.
+
+Potential values include:
+
+SITE_URL
+GOOGLE_SITE_VERIFICATION
+GA4_MEASUREMENT_ID
+VITE_GOOGLE_MAPS_API_KEY
+Firebase public configuration, if required
+Firebase server-side configuration, if required
+
+These are conceptual examples.
+
+Use the actual naming and configuration conventions supported by the project.
+
+Separate browser-visible configuration from server secrets.
+
+Never place service account credentials in frontend code.
+
+Do not add unused configuration variables.
+
+Do not commit secrets.
+
+If configuration is missing, provide a clear diagnostic and identify the remaining production requirement.
+
+Do not silently substitute a placeholder or incorrect production URL.
+
+---
+
+# 23. TESTING REQUIREMENTS
+
+Run the available checks after implementation.
+
+Use the actual package scripts and runtime configuration.
+
+Do not assume a command exists without checking package.json.
+
+## Build tests
+
+Run the production build.
+
+Run TypeScript checks using the existing scripts or an equivalent supported command.
+
+Fix errors caused by the implementation.
+
+Do not suppress errors merely to make the build appear successful.
+
+## Backend tests
+
+Verify:
+
+- Valid order creation.
+- Invalid product rejection.
+- Invalid quantity rejection.
+- Missing required fields.
+- Unconfigured prices.
+- Correct server-side calculations.
+- Correct WhatsApp destination.
+- Database persistence.
+- Database failure handling.
+- Duplicate request handling.
+- Unauthorized admin requests.
+- Public access restrictions.
+- Valid status transitions.
+
+## Canonical tests
+
+Verify:
+
+- Exactly one canonical on each indexable page.
+- Correct production hostname.
+- Correct homepage canonical.
+- Correct cart indexing directive.
+- Cart excluded from the sitemap.
+- Sitemap and canonical consistency.
+- Open Graph URL consistency.
+- No preview hostname leaks.
+- Consistent trailing-slash behavior.
+- No nonexistent canonical destinations.
+
+## Robots and sitemap tests
+
+Verify:
+
+- robots.txt is accessible.
+- sitemap.xml is accessible.
+- XML is valid.
+- URLs are absolute HTTPS URLs.
+- The homepage is crawlable.
+- Required assets are not blocked.
+- No placeholder domain remains in production output.
+
+## Analytics tests
+
+Verify:
+
+- No initialization without a valid ID.
+- No duplicate Analytics tag.
+- No duplicate page views.
+- add_to_cart works.
+- begin_checkout works.
+- whatsapp_checkout_click works.
+- order_created requires backend success.
+- purchase is not emitted without a qualifying confirmation event.
+- No personal information is transmitted in Analytics payloads.
+
+## Checkout regression tests
+
+Verify:
+
+- The cart remains usable.
+- Quantity controls work.
+- Checkout validation works.
+- Google Maps selection works.
+- Manual fallback works.
+- WhatsApp opens the correct destination.
+- The order reference is preserved after a handoff failure.
+- Repeated retries do not create duplicate orders unnecessarily.
+
+Separate actual test results from untested or environment-dependent behavior.
+
+Do not claim tests passed if they were not executed.
+
+---
+
+# 24. PRODUCTION READINESS
+
+Before declaring the application ready for production, verify:
+
+- Backend runtime works in the intended deployment.
+- Order persistence is functional.
+- Server-side price validation is active.
+- Administrative access is protected.
+- WhatsApp destination is correct.
+- Google Maps configuration is valid.
+- Production domain is configured.
+- Canonical URLs use the real domain.
+- robots.txt is correct.
+- Sitemap is valid.
+- Search Console verification is complete where possible.
+- GA4 is configured and verified where possible.
+- No private credentials are exposed.
+- Build and runtime checks pass.
+
+If a domain, token, Measurement ID, database permission, or other external configuration is missing, do not conceal the blocker.
+
+Implement what can be implemented safely and document the remaining action.
+
+---
+
+# 25. FINAL IMPLEMENTATION REPORT
+
+After editing the project, provide a concise but detailed report.
+
+## A. Existing architecture retained
+Describe the actual architecture and what was preserved.
+
+## B. Files modified
+List the important files created, changed, or removed.
+
+## C. Backend
+Describe the actual server runtime, endpoints, database, validation, and order lifecycle.
+
+## D. WhatsApp
+Confirm whether the destination was corrected throughout the project and whether the handoff was tested.
+
+## E. Pricing
+Explain where authoritative prices are stored and how server-side validation works.
+
+## F. Security
+Describe verified authorization, database restrictions, input validation, and remaining risks.
+
+## G. Canonical and SEO
+Report the actual canonical strategy, metadata, robots.txt, sitemap, and structured data.
+
+## H. Google Search Console
+Separate implemented code from ownership verification and manual setup.
+
+## I. GA4
+Report configured events, tested behavior, and any missing Measurement ID.
+
+## J. Tests
+List passed, failed, untested, and environment-dependent checks.
+
+## K. Remaining user actions
+Provide exact steps for any external setup that requires the business owner's participation.
+
+## L. Production blockers
+List everything that must be resolved before the site is declared production-ready.
+
+Do not fabricate successful deployment, indexing, database persistence, analytics collection, or external account verification.
+
+# FINAL EXECUTION DIRECTIVE
+
+Upgrade the existing CHICKCHAU application in place.
+
+Prioritize correctness, persistent order records, server-side pricing, security, WhatsApp destination accuracy, canonical consistency, and measurable analytics.
+
+Preserve the current user experience and Google Maps functionality.
+
+Implement, test, fix, and report the actual result.
+
+Do not stop after generating a plan.

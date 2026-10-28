@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+:root {
+  --brand-burgundy: #710014;
+  --brand-crimson: #8F1025;
+  --brand-dark-wine: #450A16;
+  --brand-cream: #FFF7F0;
+  --brand-peach: #F8E5D8;
+  --brand-surface: #FDF8F4;
+  --brand-text-primary: #28191B;
+  --brand-text-secondary: #735D5C;
+  --brand-border: #EBD9D0;
+}
+
+@theme {
+  --font-display: "Arial Black", "Helvetica Neue", Arial, sans-serif;
+  --font-sans: "Inter", "Helvetica Neue", Arial, sans-serif;
+  --color-crimson: var(--brand-burgundy);
+  --color-crimson-hover: var(--brand-crimson);
+  --color-soft-pearl: var(--brand-cream);
+  --color-deep-ink: var(--brand-text-primary);
+  --color-muted-rose: var(--brand-peach);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--brand-cream);
+  color: var(--brand-text-primary);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-display {
+  font-family: "Arial Black", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+}

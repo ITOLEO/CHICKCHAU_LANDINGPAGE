@@ -1,0 +1,263 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Pillar 4.1: Global Safety Net (Default Deny)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Phase 3: Reusable Hardened Global Helpers
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidOrderId(orderId) {
+      return orderId is string && orderId.size() >= 10 && orderId.size() <= 64 && orderId.matches('^ORD-[0-9]{8}-[A-Z0-9]{6}$');
+    }
+
+    function isValidProductId(productId) {
+      return productId is string && productId.size() <= 16 && (productId == 'capcin' || productId == 'shihlin');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null && request.auth.token.email_verified == true;
+    }
+
+    function isBootstrappedAdmin() {
+      return isSignedIn() && request.auth.token.email == 'itleo4444@gmail.com';
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        isBootstrappedAdmin() ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    // Validation Blueprint: AdminMember
+    function isValidAdminMember(data, adminUid) {
+      return data.keys().hasAll(['uid', 'email', 'createdAt']) &&
+        data.keys().hasOnly(['uid', 'email', 'createdAt']) &&
+        data.uid is string && data.uid.size() >= 1 && data.uid.size() <= 128 && data.uid == adminUid &&
+        data.email is string && data.email.size() >= 5 && data.email.size() <= 120 &&
+        data.createdAt is timestamp;
+    }
+
+    // Validation Blueprint: CatalogProduct
+    function isValidCatalogProduct(data, productId) {
+      return data.keys().hasAll(['id', 'name', 'shortName', 'unitPrice', 'available', 'updatedAt', 'updatedBy']) &&
+        data.keys().hasOnly(['id', 'name', 'shortName', 'unitPrice', 'available', 'updatedAt', 'updatedBy']) &&
+        data.id is string && data.id.size() <= 16 && data.id == productId &&
+        isValidProductId(data.id) &&
+        data.name is string && data.name.size() >= 2 && data.name.size() <= 80 &&
+        data.shortName is string && data.shortName.size() >= 2 && data.shortName.size() <= 40 &&
+        data.unitPrice is int && data.unitPrice >= 1000 && data.unitPrice <= 1000000 &&
+        data.available is bool &&
+        data.updatedAt is timestamp &&
+        data.updatedBy is string && data.updatedBy.size() >= 1 && data.updatedBy.size() <= 128 &&
+        data.updatedBy == request.auth.uid;
+    }
+
+    // Validation Blueprint: Order
+    function isValidOrderStatus(status) {
+      return status is string && status.size() <= 32 && (
+        status == 'pending_whatsapp' ||
+        status == 'awaiting_admin_confirmation' ||
+        status == 'confirmed' ||
+        status == 'preparing' ||
+        status == 'completed' ||
+        status == 'cancelled'
+      );
+    }
+
+    function isValidOrder(data, orderId) {
+      return data.keys().hasAll([
+          'orderId',
+          'idempotencyKey',
+          'payloadHash',
+          'productIds',
+          'totalQuantity',
+          'orderSubtotal',
+          'provisionalTotal',
+          'deliveryFeeStatus',
+          'currency',
+          'status',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'orderId',
+          'idempotencyKey',
+          'payloadHash',
+          'productIds',
+          'totalQuantity',
+          'orderSubtotal',
+          'provisionalTotal',
+          'deliveryFeeStatus',
+          'currency',
+          'status',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.orderId is string && data.orderId.size() >= 10 && data.orderId.size() <= 64 && data.orderId == orderId &&
+        data.idempotencyKey is string && data.idempotencyKey.size() >= 8 && data.idempotencyKey.size() <= 64 && data.idempotencyKey.matches('^[a-zA-Z0-9_\\-]+$') &&
+        data.payloadHash is string && data.payloadHash.size() == 64 && data.payloadHash.matches('^[a-f0-9]{64}$') &&
+        data.productIds is list && data.productIds.size() >= 1 && data.productIds.size() <= 2 &&
+        data.productIds[0] is string && data.productIds[0].size() <= 16 && isValidProductId(data.productIds[0]) &&
+        data.totalQuantity is int && data.totalQuantity >= 1 && data.totalQuantity <= 100 &&
+        data.orderSubtotal is int && data.orderSubtotal >= 7000 && data.orderSubtotal <= 5000000 &&
+        data.provisionalTotal is int && data.provisionalTotal == data.orderSubtotal &&
+        data.deliveryFeeStatus is string && data.deliveryFeeStatus.size() <= 32 &&
+        (data.deliveryFeeStatus == 'unconfirmed_whatsapp' || data.deliveryFeeStatus == 'confirmed') &&
+        data.currency is string && data.currency.size() == 3 && data.currency == 'IDR' &&
+        isValidOrderStatus(data.status) &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    // Validation Blueprint: OrderCustomerPII
+    function isValidOrderCustomerPII(data, orderId) {
+      return data.keys().hasAll([
+          'orderId',
+          'customerName',
+          'customerPhone',
+          'deliveryAddress',
+          'googleMapsUrl',
+          'notes',
+          'createdAt'
+        ]) &&
+        data.keys().hasOnly([
+          'orderId',
+          'customerName',
+          'customerPhone',
+          'deliveryAddress',
+          'googleMapsUrl',
+          'notes',
+          'createdAt'
+        ]) &&
+        data.orderId is string && data.orderId.size() >= 10 && data.orderId.size() <= 64 && data.orderId == orderId &&
+        data.customerName is string && data.customerName.size() >= 2 && data.customerName.size() <= 80 &&
+        data.customerPhone is string && data.customerPhone.size() >= 9 && data.customerPhone.size() <= 20 && data.customerPhone.matches('^(?:08|\\+628|628)[0-9]{7,12}$') &&
+        data.deliveryAddress is string && data.deliveryAddress.size() >= 10 && data.deliveryAddress.size() <= 300 &&
+        data.googleMapsUrl is string && data.googleMapsUrl.size() >= 12 && data.googleMapsUrl.size() <= 500 && data.googleMapsUrl.matches('^https://.*') &&
+        data.notes is string && data.notes.size() <= 250 &&
+        data.createdAt is timestamp;
+    }
+
+    // Validation Blueprint: OrderItem
+    function isValidOrderItem(data, orderId, itemId) {
+      return data.keys().hasAll([
+          'orderId',
+          'productId',
+          'productName',
+          'unitPrice',
+          'quantity',
+          'lineSubtotal'
+        ]) &&
+        data.keys().hasOnly([
+          'orderId',
+          'productId',
+          'productName',
+          'unitPrice',
+          'quantity',
+          'lineSubtotal'
+        ]) &&
+        data.orderId is string && data.orderId.size() >= 10 && data.orderId.size() <= 64 && data.orderId == orderId &&
+        data.productId is string && data.productId.size() <= 16 && data.productId == itemId && isValidProductId(data.productId) &&
+        data.productName is string && data.productName.size() >= 2 && data.productName.size() <= 80 &&
+        data.unitPrice is int && data.unitPrice >= 1000 && data.unitPrice <= 1000000 &&
+        data.quantity is int && data.quantity >= 1 && data.quantity <= 50 &&
+        data.lineSubtotal is int && data.lineSubtotal == data.unitPrice * data.quantity;
+    }
+
+    // 1. Admins Collection
+    match /admins/{adminUid} {
+      allow get: if isSignedIn() && isValidId(adminUid) && (request.auth.uid == adminUid || isAdmin());
+      allow create: if isBootstrappedAdmin() && isValidId(adminUid) && isValidAdminMember(incoming(), adminUid) && incoming().createdAt == request.time;
+      allow update, delete: if false;
+    }
+
+    // 2. Catalog Collection
+    match /catalog/{productId} {
+      allow get: if isValidProductId(productId);
+      allow list: if resource.data.id == 'capcin' || resource.data.id == 'shihlin';
+      allow create: if isAdmin() && isValidProductId(productId) && isValidCatalogProduct(incoming(), productId) && incoming().updatedAt == request.time;
+      allow update: if isAdmin() && isValidProductId(productId) && isValidCatalogProduct(incoming(), productId) &&
+        incoming().id == existing().id &&
+        incoming().updatedAt == request.time &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['unitPrice', 'available', 'updatedAt', 'updatedBy']);
+      allow delete: if false;
+    }
+
+    // 3. Orders Collection
+    match /orders/{orderId} {
+      allow get: if isAdmin() && isValidOrderId(orderId);
+      allow list: if isAdmin() && resource.data.currency == 'IDR';
+
+      // Atomic creation of Order + PII + at least one valid line item
+      allow create: if isValidOrderId(orderId) &&
+        isValidOrder(incoming(), orderId) &&
+        incoming().status == 'pending_whatsapp' &&
+        incoming().deliveryFeeStatus == 'unconfirmed_whatsapp' &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time &&
+        existsAfter(/databases/$(database)/documents/orders/$(orderId)/private/pii);
+
+      // Action-Based Update Pattern with Immortal Field Preservation & Terminal State Locking
+      allow update: if isAdmin() &&
+        isValidOrderId(orderId) &&
+        isValidOrder(incoming(), orderId) &&
+        incoming().orderId == existing().orderId &&
+        incoming().idempotencyKey == existing().idempotencyKey &&
+        incoming().payloadHash == existing().payloadHash &&
+        incoming().productIds == existing().productIds &&
+        incoming().totalQuantity == existing().totalQuantity &&
+        incoming().orderSubtotal == existing().orderSubtotal &&
+        incoming().provisionalTotal == existing().provisionalTotal &&
+        incoming().currency == existing().currency &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        (
+          (existing().status != 'completed' && existing().status != 'cancelled' &&
+            incoming().diff(existing()).affectedKeys().hasOnly(['status', 'deliveryFeeStatus', 'updatedAt'])) ||
+          (isBootstrappedAdmin() &&
+            incoming().diff(existing()).affectedKeys().hasOnly(['status', 'deliveryFeeStatus', 'updatedAt']))
+        );
+
+      allow delete: if false;
+
+      // 3a. Isolated Customer PII Subcollection (Pillar 6)
+      match /private/{docId} {
+        allow get: if isAdmin() && isValidOrderId(orderId) && docId == 'pii';
+        allow list: if false;
+        allow create: if isValidOrderId(orderId) &&
+          docId == 'pii' &&
+          isValidOrderCustomerPII(incoming(), orderId) &&
+          incoming().createdAt == request.time &&
+          (exists(/databases/$(database)/documents/orders/$(orderId)) ||
+           existsAfter(/databases/$(database)/documents/orders/$(orderId)));
+        allow update, delete: if false;
+      }
+
+      // 3b. Validated Order Line Items Subcollection (Pillar 1 Master Gate)
+      match /items/{itemId} {
+        allow get: if isAdmin() && isValidOrderId(orderId) && isValidProductId(itemId);
+        allow list: if isAdmin() && (resource.data.productId == 'capcin' || resource.data.productId == 'shihlin');
+        allow create: if isValidOrderId(orderId) &&
+          isValidProductId(itemId) &&
+          isValidOrderItem(incoming(), orderId, itemId) &&
+          (exists(/databases/$(database)/documents/orders/$(orderId)) ||
+           existsAfter(/databases/$(database)/documents/orders/$(orderId)));
+        allow update, delete: if false;
+      }
+    }
+  }
+}
