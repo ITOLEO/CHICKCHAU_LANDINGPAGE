@@ -30,7 +30,7 @@ export const BASE_PRODUCTS: Product[] = [
     available: true,
     comingSoon: false,
     tags: ['Dingin', 'Cincau Hitam', 'Creamy'],
-    imageUrl: '/assets/capcin_white.png'
+    imageUrl: '/assets/aistudio/CHICKHAUCINCAU2026_0435b65d.png'
   },
   {
     id: 'shihlin',
@@ -42,7 +42,7 @@ export const BASE_PRODUCTS: Product[] = [
     available: false,
     comingSoon: true,
     tags: ['Renyah', 'Gurih', 'Bumbu Spesial'],
-    imageUrl: '/assets/shihlin_white.png'
+    imageUrl: '/assets/aistudio/chickchau_since2026_1fc0b186.png'
   }
 ];
 

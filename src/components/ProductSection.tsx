@@ -49,10 +49,6 @@ export const ProductSection: React.FC<ProductSectionProps> = ({ onGoToCart }) =>
                 className="h-full rounded-2xl sm:rounded-[2rem] bg-[#FDF8F4]/95 border border-[#E2C9BE] p-4 sm:p-7 shadow-[0_14px_34px_-18px_rgba(113,0,20,0.09)] hover:shadow-[0_20px_44px_-16px_rgba(113,0,20,0.14)] transition-shadow flex flex-row items-center sm:items-stretch gap-3.5 sm:gap-6"
               >
                 <div className="relative w-24 sm:w-40 h-32 sm:h-56 shrink-0 self-center flex items-center justify-center">
-                  <div
-                    aria-hidden="true"
-                    className="absolute bottom-1 sm:bottom-2 left-1/2 -translate-x-1/2 w-18 sm:w-28 h-3 sm:h-4 bg-[#28191B]/18 blur-md rounded-full"
-                  />
                   <ProductVisual
                     productId={product.id}
                     size="lg"

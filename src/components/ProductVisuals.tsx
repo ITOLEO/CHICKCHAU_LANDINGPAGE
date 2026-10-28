@@ -14,13 +14,15 @@ export const ProductVisual: React.FC<ProductVisualProps> = ({
   size = 'lg'
 }) => {
   const isShihlin = productId === 'shihlin';
-  const src = isShihlin ? '/assets/shihlin_white.png' : '/assets/capcin_white.png';
+  const src = isShihlin
+    ? '/assets/aistudio/chickchau_since2026_1fc0b186.png'
+    : '/assets/aistudio/CHICKHAUCINCAU2026_0435b65d.png';
   const altText = isShihlin
     ? 'Crispy Chickchau dalam kemasan paper bag CHICKCHAU'
     : 'Chikchau Capcin CHICKCHAU';
 
   const paddingClass =
-    size === 'sm' ? 'p-1' : size === 'md' ? 'p-2' : 'p-2 sm:p-3';
+    size === 'sm' ? 'p-1' : size === 'md' ? 'p-1.5' : 'p-1.5 sm:p-2';
 
   return (
     <div
@@ -30,7 +32,7 @@ export const ProductVisual: React.FC<ProductVisualProps> = ({
         src={src}
         alt={altText}
         loading="eager"
-        className={`w-full h-full object-contain drop-shadow-[0_16px_20px_rgba(40,25,27,0.2)] ${imgClassName}`}
+        className={`w-full h-full object-contain mix-blend-multiply ${imgClassName}`}
       />
     </div>
   );
