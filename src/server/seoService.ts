@@ -2,6 +2,8 @@ import {
   BRAND_NAME,
   BRAND_TAGLINE,
   HOMEPAGE_DESCRIPTION,
+  HOMEPAGE_OG_DESCRIPTION,
+  HOMEPAGE_TWITTER_DESCRIPTION,
   HOMEPAGE_TITLE,
   CART_TITLE,
   CART_DESCRIPTION,
@@ -88,6 +90,8 @@ export function injectRouteSeoMetadata(rawHtml: string, requestPath: string): st
 
   const title = isCart ? CART_TITLE : HOMEPAGE_TITLE;
   const description = isCart ? CART_DESCRIPTION : HOMEPAGE_DESCRIPTION;
+  const ogDescription = isCart ? CART_DESCRIPTION : HOMEPAGE_OG_DESCRIPTION;
+  const twitterDescription = isCart ? CART_DESCRIPTION : HOMEPAGE_TWITTER_DESCRIPTION;
   const robotsContent = isCart ? 'noindex, nofollow' : 'index, follow';
 
   const canonicalUrl = !isCart ? `${siteOrigin}/` : null;
@@ -96,12 +100,26 @@ export function injectRouteSeoMetadata(rawHtml: string, requestPath: string): st
   const headTags: string[] = [
     `<title>${escapeHtml(title)}</title>`,
     `<meta name="description" content="${escapeHtml(description)}" />`,
+  ];
+
+  if (canonicalUrl) {
+    headTags.push(`<link rel="canonical" href="${escapeHtml(canonicalUrl)}" />`);
+  }
+
+  headTags.push(
     `<meta name="robots" content="${robotsContent}" />`,
-    `<meta property="og:title" content="${escapeHtml(title)}" />`,
-    `<meta property="og:description" content="${escapeHtml(description)}" />`,
     `<meta property="og:type" content="website" />`,
     `<meta property="og:site_name" content="${escapeHtml(BRAND_NAME)}" />`,
     `<meta property="og:locale" content="id_ID" />`,
+    `<meta property="og:title" content="${escapeHtml(title)}" />`,
+    `<meta property="og:description" content="${escapeHtml(ogDescription)}" />`
+  );
+
+  if (canonicalUrl) {
+    headTags.push(`<meta property="og:url" content="${escapeHtml(canonicalUrl)}" />`);
+  }
+
+  headTags.push(
     `<meta property="og:image" content="${escapeHtml(ogImageUrl)}" />`,
     `<meta property="og:image:secure_url" content="${escapeHtml(ogImageUrl)}" />`,
     `<meta property="og:image:type" content="${escapeHtml(OG_IMAGE_TYPE)}" />`,
@@ -110,15 +128,9 @@ export function injectRouteSeoMetadata(rawHtml: string, requestPath: string): st
     `<meta property="og:image:alt" content="${escapeHtml(OG_IMAGE_ALT)}" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
     `<meta name="twitter:title" content="${escapeHtml(title)}" />`,
-    `<meta name="twitter:description" content="${escapeHtml(description)}" />`,
-    `<meta name="twitter:image" content="${escapeHtml(ogImageUrl)}" />`,
-    `<meta name="twitter:image:alt" content="${escapeHtml(OG_IMAGE_ALT)}" />`,
-  ];
-
-  if (canonicalUrl) {
-    headTags.push(`<link rel="canonical" href="${escapeHtml(canonicalUrl)}" />`);
-    headTags.push(`<meta property="og:url" content="${escapeHtml(canonicalUrl)}" />`);
-  }
+    `<meta name="twitter:description" content="${escapeHtml(twitterDescription)}" />`,
+    `<meta name="twitter:image" content="${escapeHtml(ogImageUrl)}" />`
+  );
 
   if (gscVerification) {
     headTags.push(

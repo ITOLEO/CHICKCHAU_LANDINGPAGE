@@ -10,19 +10,23 @@ export const WHATSAPP_BASE_URL = `https://wa.me/${WHATSAPP_INTERNATIONAL_NUMBER}
 export const DEFAULT_ADMIN_EMAILS: readonly string[] = ['itleo4444@gmail.com'];
 
 export const BRAND_NAME = 'CHICKCHAU';
-export const BRAND_TAGLINE = 'Crispy Bites, Creamy Sips.';
-export const HOMEPAGE_TITLE = 'CHICKCHAU | Crispy Bites, Creamy Sips';
+export const BRAND_TAGLINE = 'Crispy Bites, Creamy Sips';
+export const HOMEPAGE_TITLE = 'CHICKCHAU — Crispy Bites, Creamy Sips';
 export const HOMEPAGE_DESCRIPTION =
-  'Nikmati Crispy Chickchau dan Chikchau Capcin dari CHICKCHAU. Pilih produk favoritmu dan pesan langsung melalui WhatsApp.';
-export const CART_TITLE = 'Keranjang & Checkout | CHICKCHAU';
+  'Crispy Chickchau & Chikchau Capcin, dibuat segar tiap hari. Pre-order minimal H-1, antar area Tabanan & Denpasar, Bali.';
+export const HOMEPAGE_OG_DESCRIPTION =
+  'Crispy Chickchau & Chikchau Capcin, dibuat segar tiap hari. Pre-order minimal H-1.';
+export const HOMEPAGE_TWITTER_DESCRIPTION =
+  'Crispy Chickchau & Chikchau Capcin, dibuat segar tiap hari.';
+export const CART_TITLE = 'Keranjang & Checkout — CHICKCHAU';
 export const CART_DESCRIPTION =
   'Selesaikan pesanan Chikchau Capcin dan Crispy Chickchau kamu di CHICKCHAU melalui WhatsApp.';
-export const DEFAULT_PRODUCTION_SITE_URL = 'https://www.chickchau.my.id';
-export const OG_IMAGE_PATH = '/assets/og-images.png';
-export const OG_IMAGE_TYPE = 'image/png';
+export const DEFAULT_PRODUCTION_SITE_URL = 'https://chickchau.my.id';
+export const OG_IMAGE_PATH = '/og-image.jpg';
+export const OG_IMAGE_TYPE = 'image/jpeg';
 export const OG_IMAGE_WIDTH = '1200';
 export const OG_IMAGE_HEIGHT = '630';
-export const OG_IMAGE_ALT = 'CHICKCHAU logo: a line-art chicken beside an iced drink';
+export const OG_IMAGE_ALT = 'Logo CHICKCHAU: ayam dan minuman, tulisan Since 2026';
 export const LOGO_PATH = '/logo.png';
 
 export const SEO_DEFAULTS = {
@@ -30,6 +34,8 @@ export const SEO_DEFAULTS = {
   homeTitle: HOMEPAGE_TITLE,
   cartTitle: CART_TITLE,
   description: HOMEPAGE_DESCRIPTION,
+  ogDescription: HOMEPAGE_OG_DESCRIPTION,
+  twitterDescription: HOMEPAGE_TWITTER_DESCRIPTION,
   locale: 'id_ID',
   language: 'id',
   themeColor: '#710014',
@@ -76,6 +82,9 @@ export function normalizeProductionSiteUrl(rawUrl?: string | null): string | nul
       if (host === pattern || host.endsWith(pattern) || trimmed.toLowerCase().includes(pattern)) {
         return null;
       }
+    }
+    if (host === 'www.chickchau.my.id' || host === 'chickchau.my.id') {
+      return 'https://chickchau.my.id';
     }
     // Consistent trailing-slash policy: origin without trailing slash; homepage canonical is `${origin}/`
     return parsed.origin;

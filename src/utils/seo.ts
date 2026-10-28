@@ -93,7 +93,7 @@ export function syncRouteSeo(route: 'home' | 'cart'): void {
     'meta[property="og:description"]',
     'property',
     'og:description',
-    SEO_DEFAULTS.description
+    SEO_DEFAULTS.ogDescription
   );
   upsertMetaTag('meta[property="og:image"]', 'property', 'og:image', ogImageHref);
   upsertMetaTag(
@@ -132,15 +132,9 @@ export function syncRouteSeo(route: 'home' | 'cart'): void {
     'meta[name="twitter:description"]',
     'name',
     'twitter:description',
-    SEO_DEFAULTS.description
+    SEO_DEFAULTS.twitterDescription
   );
   upsertMetaTag('meta[name="twitter:image"]', 'name', 'twitter:image', ogImageHref);
-  upsertMetaTag(
-    'meta[name="twitter:image:alt"]',
-    'name',
-    'twitter:image:alt',
-    SEO_DEFAULTS.ogImageAlt
-  );
 
   if (gscToken) {
     upsertMetaTag(

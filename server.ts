@@ -118,11 +118,11 @@ export async function createAppServer(options: { isProduction?: boolean } = {}) 
     sitemapHandler(req, res);
   });
 
-  app.get(['/assets/og-images', '/assets/og-images.png'], (_req: Request, res: Response) => {
-    const prodImgPath = path.resolve(process.cwd(), 'dist/assets/og-images.png');
-    const publicImgPath = path.resolve(process.cwd(), 'public/assets/og-images.png');
+  app.get(['/og-image.jpg', '/assets/og-images', '/assets/og-images.png'], (_req: Request, res: Response) => {
+    const prodImgPath = path.resolve(process.cwd(), 'dist/og-image.jpg');
+    const publicImgPath = path.resolve(process.cwd(), 'public/og-image.jpg');
     const targetPath = isProd && fs.existsSync(prodImgPath) ? prodImgPath : publicImgPath;
-    res.setHeader('Content-Type', 'image/png');
+    res.setHeader('Content-Type', 'image/jpeg');
     res.setHeader('Cache-Control', 'public, max-age=86400');
     res.sendFile(targetPath);
   });

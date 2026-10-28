@@ -40,11 +40,24 @@
       ]
     },
     {
+      "source": "/og-image.jpg",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "image/jpeg"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400"
+        }
+      ]
+    },
+    {
       "source": "/assets/og-images(.*)",
       "headers": [
         {
           "key": "Content-Type",
-          "value": "image/png"
+          "value": "image/jpeg"
         },
         {
           "key": "Cache-Control",
@@ -69,7 +82,7 @@
   "rewrites": [
     {
       "source": "/assets/og-images",
-      "destination": "/assets/og-images.png"
+      "destination": "/og-image.jpg"
     },
     {
       "source": "/robots.txt",

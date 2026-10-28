@@ -1,6 +1,6 @@
 {
   "name": "CHICKCHAU",
-  "description": "Nikmati Taiwanese-style crispy chicken dan cappuccino cincau dari CHICKCHAU. Pilih produk favoritmu dan pesan langsung melalui WhatsApp.",
+  "description": "Crispy Chickchau & Chikchau Capcin, dibuat segar tiap hari. Pre-order minimal H-1, antar area Tabanan & Denpasar, Bali.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
