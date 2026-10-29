@@ -75,6 +75,7 @@ function isQuotaError(err: unknown): boolean {
 
 const DELIVERY_AREA_OPTIONS: ReadonlyArray<{ label: string; lat: number; lng: number }> = [
   { label: 'Tanah Lot (Tabanan)', lat: -8.6212, lng: 115.0868 },
+  { label: 'Nyanyi', lat: -8.6227, lng: 115.1043 },
   { label: 'Denpasar Utara', lat: -8.6356, lng: 115.2126 },
   { label: 'Canggu', lat: -8.6478, lng: 115.1385 },
   { label: 'Tabanan Kota', lat: -8.5405, lng: 115.1253 },
@@ -483,15 +484,64 @@ export const DeliveryMapPicker: React.FC<DeliveryMapPickerProps> = ({
   onLocationSelect
 }) => {
   const apiKey = (import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string | undefined) || '';
-  const [selectedPos, setSelectedPos] = useState<LatLngPoint | null>(null);
-  const [selectedLabel, setSelectedLabel] = useState<string | null>(null);
-  const [originalShippingFee, setOriginalShippingFee] = useState<number>(SHIPPING_RATE_PER_KM);
+
+  const [savedLocation] = useState<SelectedDeliveryLocation | null>(() => {
+    try {
+      const raw = window.localStorage.getItem('chickchau_delivery_location_v1');
+      if (raw) {
+        const parsed = JSON.parse(raw) as Partial<SelectedDeliveryLocation>;
+        if (
+          typeof parsed.lat === 'number' &&
+          typeof parsed.lng === 'number' &&
+          typeof parsed.googleMapsUrl === 'string'
+        ) {
+          return {
+            lat: parsed.lat,
+            lng: parsed.lng,
+            displayName: typeof parsed.displayName === 'string' ? parsed.displayName : undefined,
+            formattedAddress:
+              typeof parsed.formattedAddress === 'string' ? parsed.formattedAddress : undefined,
+            googleMapsUrl: parsed.googleMapsUrl,
+            distanceKm: typeof parsed.distanceKm === 'number' ? parsed.distanceKm : 1,
+            originalShippingFee:
+              typeof parsed.originalShippingFee === 'number'
+                ? parsed.originalShippingFee
+                : SHIPPING_RATE_PER_KM
+          };
+        }
+      }
+    } catch {
+      // Ignore storage access errors
+    }
+    return null;
+  });
+
+  const [selectedPos, setSelectedPos] = useState<LatLngPoint | null>(
+    savedLocation ? { lat: savedLocation.lat, lng: savedLocation.lng } : null
+  );
+  const [selectedLabel, setSelectedLabel] = useState<string | null>(
+    savedLocation ? savedLocation.displayName || savedLocation.formattedAddress || null : null
+  );
+  const [originalShippingFee, setOriginalShippingFee] = useState<number>(
+    savedLocation ? savedLocation.originalShippingFee : SHIPPING_RATE_PER_KM
+  );
+
+  useEffect(() => {
+    if (savedLocation) {
+      onLocationSelect(savedLocation);
+    }
+  }, [savedLocation, onLocationSelect]);
 
   const handleSelectLocation = useCallback(
     (loc: SelectedDeliveryLocation) => {
       setSelectedPos({ lat: loc.lat, lng: loc.lng });
       setSelectedLabel(loc.displayName || loc.formattedAddress || null);
       setOriginalShippingFee(loc.originalShippingFee);
+      try {
+        window.localStorage.setItem('chickchau_delivery_location_v1', JSON.stringify(loc));
+      } catch {
+        // Ignore storage quota errors
+      }
       onLocationSelect(loc);
     },
     [onLocationSelect]

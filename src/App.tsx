@@ -29,6 +29,26 @@ export default function App() {
   const [isPriceConfigOpen, setIsPriceConfigOpen] = useState(false);
   const [quotaExceeded, setQuotaExceeded] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
+  const [themeMode, setThemeMode] = useState<'day' | 'night'>(() => {
+    try {
+      const saved = window.localStorage.getItem('chickchau_theme_mode_v1');
+      if (saved === 'night' || saved === 'day') {
+        return saved;
+      }
+    } catch {
+      // Ignore storage access errors
+    }
+    return 'day';
+  });
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('night-mode', themeMode === 'night');
+    try {
+      window.localStorage.setItem('chickchau_theme_mode_v1', themeMode);
+    } catch {
+      // Ignore storage quota errors
+    }
+  }, [themeMode]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -114,7 +134,7 @@ export default function App() {
   return (
     <CartProvider>
       <SplashScreen isVisible={showSplash} />
-      <div className="min-h-screen w-full max-w-[100vw] overflow-x-hidden flex flex-col bg-[#FFF7F0] text-[#28191B] selection:bg-[#710014] selection:text-white">
+      <div className="app-shell min-h-screen w-full max-w-[100vw] overflow-x-hidden flex flex-col bg-[#FFF7F0] text-[#28191B] selection:bg-[#710014] selection:text-white transition-colors duration-300">
         {quotaExceeded && (
           <div
             role="alert"
@@ -146,6 +166,8 @@ export default function App() {
         <Navbar
           currentRoute={currentRoute}
           onNavigate={navigateTo}
+          themeMode={themeMode}
+          onToggleTheme={() => setThemeMode(prev => (prev === 'day' ? 'night' : 'day'))}
         />
 
         <div className="flex-1 w-full max-w-[100vw] overflow-x-hidden">

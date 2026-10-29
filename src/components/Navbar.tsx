@@ -1,25 +1,30 @@
 import React from 'react';
-import { ShoppingCart, ArrowRight } from 'lucide-react';
+import { ShoppingCart, ArrowRight, Sun, Moon } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
 interface NavbarProps {
   currentRoute: 'home' | 'cart';
   onNavigate: (route: 'home' | 'cart', targetId?: string) => void;
+  themeMode: 'day' | 'night';
+  onToggleTheme: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   currentRoute,
-  onNavigate
+  onNavigate,
+  themeMode,
+  onToggleTheme
 }) => {
   const { totalQuantity } = useCart();
+  const isNight = themeMode === 'night';
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-[#FFF7F0]/95 backdrop-blur-md border-b border-[#EBD9D0]/60 transition-colors">
-      <div className="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8 h-14 sm:h-20 flex items-center justify-between gap-2 sm:gap-4">
+    <header className="sticky top-0 z-40 w-full bg-[#FFF7F0]/95 backdrop-blur-md border-b border-[#EBD9D0]/60 transition-colors duration-300">
+      <div className="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8 h-14 sm:h-20 flex items-center justify-between gap-1.5 sm:gap-4">
         <button
           type="button"
           onClick={() => onNavigate('home', 'top')}
-          className="font-display text-base sm:text-2xl tracking-wider text-[#710014] transition-opacity hover:opacity-90 whitespace-nowrap shrink-0 min-h-[40px] sm:min-h-[44px] flex items-center gap-2 sm:gap-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#710014] rounded-xl"
+          className="font-display text-sm sm:text-2xl tracking-wider text-[#710014] transition-opacity hover:opacity-90 whitespace-nowrap shrink-0 min-h-[38px] sm:min-h-[44px] flex items-center gap-2 sm:gap-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#710014] rounded-xl"
           aria-label="Beranda CHICKCHAU"
         >
           <span className="w-8 h-8 sm:w-11 sm:h-11 bg-[#710014] rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0 shadow-[0_4px_12px_rgba(113,0,20,0.2)]">
@@ -32,7 +37,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <span className="tracking-wide">CHICKCHAU</span>
         </button>
 
-        <nav className="flex items-center gap-1 sm:gap-6" aria-label="Navigasi Utama">
+        <nav className="flex items-center gap-1 sm:gap-4" aria-label="Navigasi Utama">
           <button
             type="button"
             onClick={() => onNavigate('home', 'top')}
@@ -55,8 +60,28 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             type="button"
+            onClick={onToggleTheme}
+            className="theme-toggle-btn min-h-[36px] sm:min-h-[40px] px-2.5 sm:px-3.5 py-1.5 rounded-full border border-[#710014]/30 bg-white text-[#28191B] hover:border-[#710014] text-xs font-bold inline-flex items-center gap-1.5 transition-all shrink-0 shadow-[0_2px_8px_rgba(40,25,27,0.06)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#710014]"
+            aria-label={isNight ? 'Ganti ke Day Mode' : 'Ganti ke Night Mode'}
+            title={isNight ? 'Ganti ke Day Mode' : 'Ganti ke Night Mode'}
+          >
+            {isNight ? (
+              <>
+                <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400 shrink-0" />
+                <span className="hidden xs:inline sm:inline">Day</span>
+              </>
+            ) : (
+              <>
+                <Moon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#710014] shrink-0" />
+                <span className="hidden xs:inline sm:inline">Night</span>
+              </>
+            )}
+          </button>
+
+          <button
+            type="button"
             onClick={() => onNavigate('cart')}
-            className={`min-h-[38px] sm:min-h-[44px] px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-extrabold transition-all whitespace-nowrap shrink-0 flex items-center gap-1.5 sm:gap-2.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#710014] ${
+            className={`min-h-[38px] sm:min-h-[44px] px-2.5 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-extrabold transition-all whitespace-nowrap shrink-0 flex items-center gap-1.5 sm:gap-2.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#710014] ${
               currentRoute === 'cart' || totalQuantity > 0
                 ? 'bg-[#710014] hover:bg-[#8F1025] text-white shadow-[0_6px_18px_rgba(113,0,20,0.28)]'
                 : 'bg-white text-[#710014] border border-[#710014]/35 hover:border-[#710014] shadow-[0_4px_14px_rgba(40,25,27,0.06)]'

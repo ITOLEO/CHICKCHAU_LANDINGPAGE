@@ -26,13 +26,13 @@ export const ProductVisual: React.FC<ProductVisualProps> = ({
 
   return (
     <div
-      className={`relative w-full h-full flex items-center justify-center select-none ${paddingClass} ${className}`}
+      className={`product-visual-box relative w-full h-full flex items-center justify-center select-none rounded-2xl transition-colors ${paddingClass} ${className}`}
     >
       <img
         src={src}
         alt={altText}
         loading="eager"
-        className={`w-full h-full object-contain mix-blend-multiply ${imgClassName}`}
+        className={`w-full h-full object-contain mix-blend-multiply rounded-xl ${imgClassName}`}
       />
     </div>
   );

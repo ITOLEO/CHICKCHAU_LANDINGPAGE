@@ -83,16 +83,65 @@ export const CartPage: React.FC<CartPageProps> = ({ onBackToMenu }) => {
     removeFromCart
   } = useCart();
 
-  const [formData, setFormData] = useState<CheckoutFormData>({
-    fullName: '',
-    whatsappPhone: '',
-    deliveryAddress: '',
-    googleMapsUrl: '',
-    notes: ''
+  const [formData, setFormData] = useState<CheckoutFormData>(() => {
+    try {
+      const saved = window.localStorage.getItem('chickchau_checkout_form_v1');
+      if (saved) {
+        const parsed = JSON.parse(saved) as Partial<CheckoutFormData>;
+        return {
+          fullName: typeof parsed.fullName === 'string' ? parsed.fullName : '',
+          whatsappPhone: typeof parsed.whatsappPhone === 'string' ? parsed.whatsappPhone : '',
+          deliveryAddress: typeof parsed.deliveryAddress === 'string' ? parsed.deliveryAddress : '',
+          googleMapsUrl: typeof parsed.googleMapsUrl === 'string' ? parsed.googleMapsUrl : '',
+          notes: typeof parsed.notes === 'string' ? parsed.notes : ''
+        };
+      }
+    } catch {
+      // Fallback to empty form
+    }
+    return {
+      fullName: '',
+      whatsappPhone: '',
+      deliveryAddress: '',
+      googleMapsUrl: '',
+      notes: ''
+    };
   });
 
   const [errors, setErrors] = useState<ValidationErrors>({});
-  const [selectedCoords, setSelectedCoords] = useState<LatLngPoint | null>(null);
+  const [selectedCoords, setSelectedCoords] = useState<LatLngPoint | null>(() => {
+    try {
+      const saved = window.localStorage.getItem('chickchau_selected_coords_v1');
+      if (saved) {
+        const parsed = JSON.parse(saved) as Partial<LatLngPoint>;
+        if (typeof parsed.lat === 'number' && typeof parsed.lng === 'number') {
+          return { lat: parsed.lat, lng: parsed.lng };
+        }
+      }
+    } catch {
+      // Fallback to null
+    }
+    return null;
+  });
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem('chickchau_checkout_form_v1', JSON.stringify(formData));
+    } catch {
+      // Ignore storage errors
+    }
+  }, [formData]);
+
+  useEffect(() => {
+    try {
+      if (selectedCoords) {
+        window.localStorage.setItem('chickchau_selected_coords_v1', JSON.stringify(selectedCoords));
+      }
+    } catch {
+      // Ignore storage errors
+    }
+  }, [selectedCoords]);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [createdOrder, setCreatedOrder] = useState<ServerOrderResponse | null>(null);
   const [checkoutNotice, setCheckoutNotice] = useState<{

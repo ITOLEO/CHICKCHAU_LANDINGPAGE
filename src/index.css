@@ -66,3 +66,84 @@ body {
   font-weight: 900;
   text-transform: uppercase;
 }
+
+/* Night Mode Theme Overrides (Default: Day Mode) */
+html.night-mode,
+html.night-mode body,
+html.night-mode .app-shell {
+  background-color: #110A0C !important;
+  color: #F7EFEA !important;
+}
+
+html.night-mode header {
+  background-color: rgba(17, 10, 12, 0.92) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+html.night-mode .bg-\[\#FFF7F0\],
+html.night-mode .bg-\[\#F2F1ED\] {
+  background-color: #110A0C !important;
+}
+
+html.night-mode .bg-\[\#FDF8F4\],
+html.night-mode .bg-\[\#FDF8F4\]\/95 {
+  background-color: #1B1114 !important;
+  border-color: #382228 !important;
+}
+
+html.night-mode .bg-\[\#FAF9F6\],
+html.night-mode .bg-white {
+  background-color: #24161A !important;
+  border-color: #462B32 !important;
+  color: #F7EFEA !important;
+}
+
+html.night-mode .text-\[\#28191B\],
+html.night-mode .text-\[\#21191A\],
+html.night-mode .text-\[\#28191A\] {
+  color: #F7EFEA !important;
+}
+
+html.night-mode .text-\[\#594345\],
+html.night-mode .text-\[\#524346\] {
+  color: #C9B2B5 !important;
+}
+
+html.night-mode .text-\[\#710014\],
+html.night-mode .text-\[\#710014\]\/85 {
+  color: #FF5C77 !important;
+}
+
+html.night-mode .after\:bg-\[\#710014\]::after {
+  background-color: #FF5C77 !important;
+}
+
+html.night-mode .text-\[\#14532D\] {
+  color: #4ADE80 !important;
+}
+
+html.night-mode .border-\[\#E2C9BE\],
+html.night-mode .border-\[\#EBD9D0\],
+html.night-mode .border-\[\#21191A\]\/12,
+html.night-mode .border-\[\#21191A\]\/15,
+html.night-mode .border-\[\#21191A\]\/25,
+html.night-mode .border-\[\#21191A\]\/35 {
+  border-color: #3D252B !important;
+}
+
+html.night-mode input,
+html.night-mode textarea {
+  background-color: #24161A !important;
+  color: #F7EFEA !important;
+  border-color: #4A2E35 !important;
+}
+
+html.night-mode input::placeholder,
+html.night-mode textarea::placeholder {
+  color: #9E8286 !important;
+}
+
+html.night-mode .product-visual-box {
+  background-color: #FFF7F0 !important;
+}
+
